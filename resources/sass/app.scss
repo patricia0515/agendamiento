@@ -1,0 +1,18 @@
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Nunito");
+
+// Variables
+@import "variables";
+
+// Bootstrap
+@import "~bootstrap/scss/bootstrap";
+
+/* Añade 2 importaciones 
+ fichero «resources/sass/app.scss«, una con la fuente de los iconos de 
+ material design y otra con el css correspondiente a la biblioteca vuetify */
+
+// Fonts
+@import url("https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css");
+
+// Vuetify
+@import "~vuetify/dist/vuetify.min.css";
