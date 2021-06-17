@@ -29,3 +29,8 @@ Route::get('/', function () {
 Route::post('consultaPersona', 'MasterController@consulta');
 Route::post('listar-tipificaciones', 'TipificacionController@listar');
 Route::post('listar-subtipificaciones', 'TipificacionController@listarSubtipificacion');
+
+// Ruta para reportes y administrador
+Route::get('/reportes', function (){
+    return view('reportes');
+});
