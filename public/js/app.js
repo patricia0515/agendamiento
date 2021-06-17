@@ -1908,6 +1908,45 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2243,7 +2282,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
-    return {
+    var _ref;
+
+    return _ref = {
       nombreAsesor: '',
       formulariogestion: 0,
       buscarValor: '',
@@ -2261,23 +2302,8 @@ __webpack_require__.r(__webpack_exports__);
       telefono2_persona: '',
       fecha_agendamiento: '',
       direcc_residencia_persona: '',
-      barrio_persona: '',
-      //Variables para los mensajes de alerta
-      alert: false,
-      mensajeAlert: '',
-      typeAlert: '',
-      //Para el panel de expansión
-      panel: [0, 1],
-      disabled: true,
-      readonly: true,
-      //para el select
-      select: null,
-      tipificacion: [],
-      sub_tipificacion: [],
-      id_tip: 0,
-      //Para el formulario flotante
-      dialog: false
-    };
+      barrio_persona: ''
+    }, _defineProperty(_ref, "fecha_agendamiento", ''), _defineProperty(_ref, "hora_agendamiento", ''), _defineProperty(_ref, "items_hora", ['08:00-10:00', '09:00-11:00', '10:00-12:00', '13:00-15:00', '14:00-16:00', '15:00-17:00']), _defineProperty(_ref, "hora", ''), _defineProperty(_ref, "minimo", new Date().toISOString().substr(0, 10)), _defineProperty(_ref, "alert", false), _defineProperty(_ref, "mensajeAlert", ''), _defineProperty(_ref, "typeAlert", ''), _defineProperty(_ref, "panel", [0, 1]), _defineProperty(_ref, "disabled", true), _defineProperty(_ref, "readonly", true), _defineProperty(_ref, "select", null), _defineProperty(_ref, "tipificacion", []), _defineProperty(_ref, "sub_tipificacion", []), _defineProperty(_ref, "id_tip", 0), _defineProperty(_ref, "dialog", false), _ref;
   },
   methods: {
     ////Validaciones solo Números
@@ -2324,7 +2350,7 @@ __webpack_require__.r(__webpack_exports__);
             _this.formulariogestion = 1; //Mensaje de alerta
 
             _this.alert = true;
-            _this.typeAlert = "success";
+            _this.typeAlert = 'success';
             _this.mensajeAlert = '¡Bien hecho! Registro encontrado.';
             _this.disabled = false, _this.idmaster = _this.arrayDataPersona[0].idmaster;
             _this.num_doc_persona = _this.arrayDataPersona[0].num_doc_persona;
@@ -2375,6 +2401,12 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         console.log("error " + error);
       });
+    },
+    agendarCita: function agendarCita() {
+      console.log('TERMINO EL FORM PASO A PASO');
+      console.log(this.hora);
+      console.log(this.fecha_agendamiento);
+      this.dialog = false;
     },
     ////Limpiar los datos del cliente cuando se realiza una nueva busqueda
     limpiarDatos: function limpiarDatos() {
@@ -38960,8 +38992,8 @@ var render = function() {
                     _c("v-col", { attrs: { cols: "12", sm: "2" } }),
                     _vm._v(" "),
                     _c(
-                      "v-col",
-                      { attrs: { cols: "12", sm: "6" } },
+                      "v-flex",
+                      { attrs: { "xs12:": "" } },
                       [
                         _c("v-text-field", {
                           attrs: {
@@ -39009,7 +39041,7 @@ var render = function() {
                     _vm._v(" "),
                     _c(
                       "v-col",
-                      { attrs: { cols: "12", sm: "6", md: "4" } },
+                      { attrs: { cols: "12", md: "4" } },
                       [
                         _c(
                           "v-btn",
@@ -39326,6 +39358,7 @@ var render = function() {
                         _vm._v(" "),
                         _c(
                           "v-expansion-panel-content",
+                          { staticClass: "pa-6" },
                           [
                             [
                               _c("v-select", {
@@ -39333,7 +39366,8 @@ var render = function() {
                                   items: _vm.tipificacion,
                                   "item-text": "detalle",
                                   "item-value": "idtipificacion",
-                                  label: "Tipificación"
+                                  label: "Tipificación",
+                                  outlined: ""
                                 },
                                 on: {
                                   change: function($event) {
@@ -39357,7 +39391,8 @@ var render = function() {
                                       items: _vm.sub_tipificacion,
                                       "item-text": "detalle",
                                       "item-value": "idsub_tipificacion",
-                                      label: "Subtipificación"
+                                      label: "Subtipificación",
+                                      outlined: ""
                                     },
                                     on: {
                                       change: function($event) {
@@ -39474,10 +39509,14 @@ var render = function() {
                                                             "Anterior",
                                                           "finish-button-text":
                                                             "Guardar y Procesar",
-                                                          color: "indigo",
+                                                          color: "#0000FF",
                                                           shape: "circle",
                                                           title: "",
                                                           subtitle: ""
+                                                        },
+                                                        on: {
+                                                          "on-complete":
+                                                            _vm.agendarCita
                                                         }
                                                       },
                                                       [
@@ -39486,7 +39525,7 @@ var render = function() {
                                                           {
                                                             attrs: {
                                                               title:
-                                                                "Información Personales"
+                                                                "Información Personal"
                                                             }
                                                           },
                                                           [
@@ -39894,10 +39933,113 @@ var render = function() {
                                                             }
                                                           },
                                                           [
-                                                            _vm._v(
-                                                              "\n                                        Segundo paso\n                                    "
+                                                            _c(
+                                                              "v-row",
+                                                              [
+                                                                _c(
+                                                                  "v-card",
+                                                                  [
+                                                                    _c(
+                                                                      "v-date-picker",
+                                                                      {
+                                                                        attrs: {
+                                                                          label:
+                                                                            "Fecha Agendamiento (*)",
+                                                                          placeholder:
+                                                                            "AAAA-MM-DD",
+                                                                          "full-width":
+                                                                            "",
+                                                                          locale:
+                                                                            "es-co",
+                                                                          min:
+                                                                            _vm.minimo
+                                                                        },
+                                                                        model: {
+                                                                          value:
+                                                                            _vm.fecha_agendamiento,
+                                                                          callback: function(
+                                                                            $$v
+                                                                          ) {
+                                                                            _vm.fecha_agendamiento = $$v
+                                                                          },
+                                                                          expression:
+                                                                            "fecha_agendamiento"
+                                                                        }
+                                                                      }
+                                                                    )
+                                                                  ],
+                                                                  1
+                                                                ),
+                                                                _vm._v(" "),
+                                                                _c(
+                                                                  "v-col",
+                                                                  {
+                                                                    attrs: {
+                                                                      cols:
+                                                                        "12",
+                                                                      sm: "6"
+                                                                    }
+                                                                  },
+                                                                  [
+                                                                    _c(
+                                                                      "v-select",
+                                                                      {
+                                                                        attrs: {
+                                                                          items:
+                                                                            _vm.items_hora,
+                                                                          label:
+                                                                            "Hora Agendamiento (*)",
+                                                                          outlined:
+                                                                            ""
+                                                                        },
+                                                                        model: {
+                                                                          value:
+                                                                            _vm.hora,
+                                                                          callback: function(
+                                                                            $$v
+                                                                          ) {
+                                                                            _vm.hora = $$v
+                                                                          },
+                                                                          expression:
+                                                                            "hora"
+                                                                        }
+                                                                      }
+                                                                    )
+                                                                  ],
+                                                                  1
+                                                                ),
+                                                                _vm._v(" "),
+                                                                _c(
+                                                                  "v-col",
+                                                                  {
+                                                                    attrs: {
+                                                                      cols:
+                                                                        "12",
+                                                                      md: "12"
+                                                                    }
+                                                                  },
+                                                                  [
+                                                                    _c(
+                                                                      "v-textarea",
+                                                                      {
+                                                                        attrs: {
+                                                                          solo:
+                                                                            "",
+                                                                          name:
+                                                                            "input-7-4",
+                                                                          label:
+                                                                            "Comentario"
+                                                                        }
+                                                                      }
+                                                                    )
+                                                                  ],
+                                                                  1
+                                                                )
+                                                              ],
+                                                              1
                                                             )
-                                                          ]
+                                                          ],
+                                                          1
                                                         )
                                                       ],
                                                       1

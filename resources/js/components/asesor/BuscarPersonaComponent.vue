@@ -15,8 +15,8 @@
               <div>
                 <v-row>
                   <v-col cols="12" sm="2"></v-col>
-                  <v-col
-                    cols="12" sm="6" 
+                  <v-flex
+                    xs12:
                   >
                     <v-text-field
                       v-model="buscarValor"
@@ -27,10 +27,10 @@
                       @keyup.enter="buscarCliente()"
                       @paste.prevent
                     ></v-text-field>
-                  </v-col>
+                  </v-flex>
 
                   <v-col
-                    cols="12" sm="6" md="4"
+                    cols="12"  md="4"
                   >
                     <!-- aqui va el boton -->
                     <v-btn
@@ -114,7 +114,7 @@
                           </v-icon>
                         </template>
                         </v-expansion-panel-header>
-                      <v-expansion-panel-content>
+                      <v-expansion-panel-content class="pa-6">
                     <!-- Select Tipificación -->
                         <template >
                             <v-select
@@ -123,6 +123,7 @@
                             item-text="detalle"
                             item-value="idtipificacion"
                             label="Tipificación"
+                            outlined
                             @change="listaSubtipificacion()"
                           ></v-select>
                         </template>
@@ -135,6 +136,7 @@
                             item-text="detalle"
                             item-value="idsub_tipificacion"
                             label="Subtipificación"
+                            outlined
                             @change="dialog = true"
                           ></v-select>
                         </template>
@@ -174,14 +176,15 @@
                                       next-button-text="Siguiente"
                                       back-button-text="Anterior"
                                       finish-button-text="Guardar y Procesar"
-                                      color='indigo'
+                                      @on-complete= "agendarCita"
+                                      color='#0000FF'
                                       shape="circle"
                                       title=""
                                       subtitle=""
                                       >
                 
                                            <tab-content 
-                                           title="Información Personales">
+                                           title="Información Personal">
                                           <v-row>
                                             <v-col
                                               cols="12"
@@ -302,7 +305,41 @@
                                         </tab-content>
 
                                         <tab-content title="Agendamiento">
-                                            Segundo paso
+                                            <v-row>
+                                            <v-card>
+                                              <v-date-picker
+                                                v-model="fecha_agendamiento"
+                                                label="Fecha Agendamiento (*)"
+                                                placeholder="AAAA-MM-DD"
+                                                full-width
+                                                locale="es-co"
+                                                :min='minimo'
+                                              ></v-date-picker>
+                                            </v-card>
+
+                                            <v-col
+                                              cols="12"
+                                              sm="6"
+                                            >
+                                              <v-select
+                                                v-model="hora"
+                                                :items="items_hora"
+                                                label="Hora Agendamiento (*)"
+                                                outlined
+                                              ></v-select>
+                                            </v-col>
+                                            <v-col
+                                              cols="12"
+                                              md="12"
+                                            >
+                                              <v-textarea
+                                                solo
+                                               
+                                                name="input-7-4"
+                                                label="Comentario"
+                                              ></v-textarea>
+                                            </v-col>
+                                          </v-row>
                                         </tab-content>
                                       </form-wizard>
                                     <!-- Fin Formulario -->
@@ -353,6 +390,20 @@ export default {
         fecha_agendamiento:'',
         direcc_residencia_persona:'',
         barrio_persona:'',
+
+        //para la fecha y hora de agendamiento
+        fecha_agendamiento:'',
+        hora_agendamiento:'',
+        items_hora: [
+          '08:00-10:00',
+          '09:00-11:00',
+          '10:00-12:00',
+          '13:00-15:00',
+          '14:00-16:00',
+          '15:00-17:00'],
+          hora:'',
+          minimo:new Date().toISOString().substr(0,10),
+          /* Dejo la fecha minima tomano en cuenta el día calendario del equipo (Pilas no cuenta el dia actual) */
         
 
         //Variables para los mensajes de alerta
@@ -417,7 +468,7 @@ export default {
               this.formulariogestion = 1;
               //Mensaje de alerta
               this.alert=true;
-              this.typeAlert="success";
+              this.typeAlert='success';
               this.mensajeAlert= '¡Bien hecho! Registro encontrado.';
               
               this.disabled= false,
@@ -466,6 +517,12 @@ export default {
         }).catch(error => {
                  console.log("error " + error);
               });
+      },
+      agendarCita(){
+        console.log('TERMINO EL FORM PASO A PASO')
+        console.log(this.hora)
+        console.log(this.fecha_agendamiento)
+        this.dialog=false;
       },
      
         ////Limpiar los datos del cliente cuando se realiza una nueva busqueda
