@@ -34,3 +34,6 @@ Route::post('listar-subtipificaciones', 'TipificacionController@listarSubtipific
 Route::get('/reportes', function (){
     return view('reportes');
 });
+
+/* Aqui pongo la ruta para generar el excel */
+Route::post('reportes-list-excel', 'MasterController@exportExcel')->name('reportes.excel');

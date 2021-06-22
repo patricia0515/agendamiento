@@ -6,6 +6,9 @@ use App\Master;
 use DB;
 
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ReportesExport;
+use Carbon\Carbon;
 
 class MasterController extends Controller
 {
@@ -24,5 +27,18 @@ class MasterController extends Controller
         /* dd($persona); */
         return $persona;
 
+    }
+
+    /**
+     * Metodo que realiza la exportacion
+     * de los datos a un archivo excel
+     * 
+     * @return ReportesExport
+     */
+    public function exportExcel(Request $request)
+    {
+        $filtro1 = $request->fecha_inicial;
+        $filtro2 = $request->fecha_final;
+        return (new ReportesExport($filtro1, $filtro2))->download('reportes-list.xlsx');
     }
 }

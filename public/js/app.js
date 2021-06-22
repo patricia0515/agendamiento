@@ -2476,118 +2476,93 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      singleSelect: false,
-      loading: false,
-      selected: [],
-      headers: [{
-        text: 'Dessert (100g serving)',
-        align: 'start',
-        sortable: false,
-        value: 'name'
-      }, {
-        text: 'Calories',
-        value: 'calories'
-      }, {
-        text: 'Fat (g)',
-        value: 'fat'
-      }, {
-        text: 'Carbs (g)',
-        value: 'carbs'
-      }, {
-        text: 'Protein (g)',
-        value: 'protein'
-      }, {
-        text: 'Iron (%)',
-        value: 'iron'
-      }],
-      desserts: [{
-        name: 'Frozen Yogurt',
-        calories: 159,
-        fat: 6.0,
-        carbs: 24,
-        protein: 4.0,
-        iron: '1%'
-      }, {
-        name: 'Ice cream sandwich',
-        calories: 237,
-        fat: 9.0,
-        carbs: 37,
-        protein: 4.3,
-        iron: '1%'
-      }, {
-        name: 'Eclair',
-        calories: 262,
-        fat: 16.0,
-        carbs: 23,
-        protein: 6.0,
-        iron: '7%'
-      }, {
-        name: 'Cupcake',
-        calories: 305,
-        fat: 3.7,
-        carbs: 67,
-        protein: 4.3,
-        iron: '8%'
-      }, {
-        name: 'Gingerbread',
-        calories: 356,
-        fat: 16.0,
-        carbs: 49,
-        protein: 3.9,
-        iron: '16%'
-      }, {
-        name: 'Jelly bean',
-        calories: 375,
-        fat: 0.0,
-        carbs: 94,
-        protein: 0.0,
-        iron: '0%'
-      }, {
-        name: 'Lollipop',
-        calories: 392,
-        fat: 0.2,
-        carbs: 98,
-        protein: 0,
-        iron: '2%'
-      }, {
-        name: 'Honeycomb',
-        calories: 408,
-        fat: 3.2,
-        carbs: 87,
-        protein: 6.5,
-        iron: '45%'
-      }, {
-        name: 'Donut',
-        calories: 452,
-        fat: 25.0,
-        carbs: 51,
-        protein: 4.9,
-        iron: '22%'
-      }, {
-        name: 'KitKat',
-        calories: 518,
-        fat: 26.0,
-        carbs: 65,
-        protein: 7,
-        iron: '6%'
-      }]
+      nombreadmin: '',
+      fechaInicial: new Date().toISOString().substr(0, 10),
+      fechaFinal: new Date().toISOString().substr(0, 10),
+      //Para la alerta
+      banMensaje: false,
+      arrayMensaje: [],
+      colorMensaje: '',
+      //Variable auxiliar
+      exporRep: false
     };
   },
-  watch: {
-    loader: function loader() {
+  methods: {
+    //Exportar a excel
+    exportarExcel: function exportarExcel(event) {
       var _this = this;
 
-      var l = this.loader;
-      this[l] = !this[l];
-      setTimeout(function () {
-        return _this[l] = false;
-      }, 3000);
-      this.loader = null;
+      var dbtm = this;
+      dbtm.arrayMensaje = [];
+      dbtm.exporRep = true;
+
+      if (dbtm.fechaInicial && dbtm.fechaFinal) {
+        if (dbtm.fechaInicial > dbtm.fechaFinal) {
+          dbtm.arrayMensaje.push("El campo Fecha Inicial debe ser menor o igual al campo Fecha Final.");
+          dbtm.banMensaje = true;
+          dbtm.colorMensaje = 'error';
+          dbtm.exporRep = false;
+        } else {
+          axios({
+            url: 'reporteriaExcel',
+            method: "POST",
+            data: {
+              idReporte: dbtm.selectTipoReporte,
+              idTipificacion: dbtm.selectTipificacion,
+              idSubTipificacion: dbtm.selectSubTipificacion,
+              fechaInicial: dbtm.fechaInicial,
+              fechaFinal: dbtm.fechaFinal
+            },
+            responseType: 'blob'
+          }).then(function (response) {
+            if (response.status == 200) {
+              var url = window.URL.createObjectURL(new Blob([response.data]));
+              var link = document.createElement('a');
+              link.href = url;
+              link.setAttribute('download', 'reporte.xlsx'); //or any other extension
+
+              document.body.appendChild(link);
+              link.click();
+            } else if (response.status == 210) {
+              dbtm.arrayMensaje.push("No existen registros para el reporte.");
+              dbtm.banMensaje = true;
+              dbtm.colorMensaje = 'info';
+            }
+
+            _this.exporRep = false;
+          })["catch"](function (error) {// console.log("error " + error);
+          });
+          dbtm.exporRep = false;
+        }
+      } else {
+        dbtm.arrayMensaje.push("Los campos Fecha Inicial y Fecha Final, son obligatorios.");
+        dbtm.banMensaje = true;
+        dbtm.colorMensaje = 'error';
+        dbtm.exporRep = false;
+      }
     }
-  }
+  },
+  mounted: function mounted() {}
 });
 
 /***/ }),
@@ -38894,49 +38869,6 @@ if(false) {}
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e&":
-/*!*******************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e& ***!
-  \*******************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c(
-        "v-toolbar",
-        {
-          staticStyle: { height: "125px" },
-          attrs: {
-            prominent: "",
-            src: "img/logo.jpg",
-            alt: "Logo famisanar",
-            title: "Logo famisanar"
-          }
-        },
-        [_c("v-spacer")],
-        1
-      )
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/asesor/BuscarPersonaComponent.vue?vue&type=template&id=1f0b9254&":
 /*!********************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/asesor/BuscarPersonaComponent.vue?vue&type=template&id=1f0b9254& ***!
@@ -38958,10 +38890,7 @@ var render = function() {
       _c("v-card", { staticStyle: { width: "175px", height: "30px" } }, [
         _c(
           "a",
-          {
-            staticClass: "form-group col-md-12 btn btn-primary",
-            attrs: { href: "" }
-          },
+          { staticClass: "form-group col-md-12 btn ", attrs: { href: "" } },
           [_vm._v("Nueva Gestión")]
         )
       ]),
@@ -38971,10 +38900,7 @@ var render = function() {
       _c("v-card", { staticStyle: { width: "175px", height: "30px" } }, [
         _c(
           "a",
-          {
-            staticClass: "form-group col-md-12 btn btn-primary",
-            attrs: { href: "" }
-          },
+          { staticClass: "form-group col-md-12 btn ", attrs: { href: "" } },
           [_vm._v("Gestiones")]
         )
       ]),
@@ -40124,56 +40050,136 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("v-data-table", {
-    staticClass: "elevation-1",
-    attrs: {
-      headers: _vm.headers,
-      items: _vm.desserts,
-      "single-select": _vm.singleSelect,
-      "item-key": "name",
-      "show-select": ""
-    },
-    scopedSlots: _vm._u([
-      {
-        key: "top",
-        fn: function() {
-          return [
-            _c(
-              "v-btn",
-              {
-                staticClass: "ma-2 white--text",
-                attrs: {
-                  loading: _vm.loading,
-                  disabled: _vm.loading,
-                  color: "blue-grey"
-                },
-                on: {
-                  click: function($event) {
-                    _vm.loader = "loading"
+  return _c(
+    "v-container",
+    [
+      _c("v-card", { staticStyle: { width: "175px", height: "30px" } }, [
+        _c(
+          "label",
+          {
+            staticClass: "form-group col-md-12 btn btn-primary ",
+            attrs: { for: "reportes" }
+          },
+          [_vm._v("Descarga de Reportes")]
+        )
+      ]),
+      _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _c("div", { staticClass: "card" }, [
+        _c(
+          "div",
+          { staticClass: "card-header text-center bg bg-primary" },
+          [
+            _c("font", { attrs: { color: "white" } }, [
+              _vm._v("Reporte Gestion")
+            ])
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "card-body" }, [
+          _c("form", { attrs: { action: "", method: "POST" } }, [
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-5" }, [
+                _c("input", {
+                  staticClass: "form-control",
+                  attrs: {
+                    type: "date",
+                    name: "fecha_inicial",
+                    id: "datepickerInicio",
+                    required: ""
                   }
-                }
-              },
-              [
-                _vm._v("\n          Upload\n          "),
-                _c("v-icon", { attrs: { right: "", dark: "" } }, [
-                  _vm._v("\n              mdi-cloud-upload\n          ")
-                ])
-              ],
-              1
-            )
-          ]
-        },
-        proxy: true
-      }
-    ]),
-    model: {
-      value: _vm.selected,
-      callback: function($$v) {
-        _vm.selected = $$v
-      },
-      expression: "selected"
-    }
-  })
+                })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-5" }, [
+                _c("input", {
+                  staticClass: "form-control",
+                  attrs: {
+                    type: "date",
+                    name: "fecha_final",
+                    id: "datepickerFin",
+                    required: ""
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-2" }, [
+                _c("input", {
+                  attrs: {
+                    type: "hidden",
+                    value: "reporteGestion",
+                    name: "opcionReporte"
+                  }
+                }),
+                _vm._v(" "),
+                _c("input", {
+                  staticClass: "btn btn-primary",
+                  attrs: {
+                    type: "submit",
+                    id: "btnfiltrar",
+                    value: "Descargar"
+                  }
+                })
+              ])
+            ])
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _c("div", { staticClass: "card" }, [
+        _c(
+          "div",
+          { staticClass: "card-header text-center bg bg-primary" },
+          [
+            _c("font", { attrs: { color: "white" } }, [
+              _vm._v("Histórico Agendamiento")
+            ])
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "card-body" }, [
+          _c("form", { attrs: { action: "", method: "POST" } }, [
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-5" }, [
+                _c("input", {
+                  staticClass: "form-control",
+                  attrs: { type: "date", name: "fechaInicial", required: "" }
+                })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-5" }, [
+                _c("input", {
+                  staticClass: "form-control",
+                  attrs: { type: "date", name: "fechaFinal", required: "" }
+                })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-2" }, [
+                _c("input", {
+                  attrs: {
+                    type: "hidden",
+                    value: "reporteGestion",
+                    name: "opcionReporte"
+                  }
+                }),
+                _vm._v(" "),
+                _c("input", {
+                  staticClass: "btn btn-primary",
+                  attrs: { type: "submit", value: "Descargar" }
+                })
+              ])
+            ])
+          ])
+        ])
+      ])
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -97756,8 +97762,11 @@ Vue.use(vue_form_wizard__WEBPACK_IMPORTED_MODULE_1___default.a);
  */
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
-Vue.component("example-component", __webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue")["default"]); //Asesor
+// Vue.component(
+//     "example-component",
+//     require("./components/ExampleComponent.vue").default
+// );
+//Asesor
 
 Vue.component("buscarpersonas-component", __webpack_require__(/*! ./components/asesor/BuscarPersonaComponent.vue */ "./resources/js/components/asesor/BuscarPersonaComponent.vue")["default"]);
 Vue.component("reportesgestion-component", __webpack_require__(/*! ./components/reportes/ReportesGestionComponent.vue */ "./resources/js/components/reportes/ReportesGestionComponent.vue")["default"]);
@@ -97817,59 +97826,6 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     encrypted: true
 // });
-
-/***/ }),
-
-/***/ "./resources/js/components/ExampleComponent.vue":
-/*!******************************************************!*\
-  !*** ./resources/js/components/ExampleComponent.vue ***!
-  \******************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ExampleComponent.vue?vue&type=template&id=299e239e& */ "./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-var script = {}
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__["default"])(
-  script,
-  _ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/ExampleComponent.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e&":
-/*!*************************************************************************************!*\
-  !*** ./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e& ***!
-  \*************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./ExampleComponent.vue?vue&type=template&id=299e239e& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
 
 /***/ }),
 
