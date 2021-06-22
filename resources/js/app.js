@@ -38,6 +38,8 @@ Vue.component(
     require("./components/asesor/BuscarPersonaComponent.vue").default
 );
 
+Vue.component("reportesgestion-component", require("./components/reportes/ReportesGestionComponent.vue").default);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
