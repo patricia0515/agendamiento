@@ -2478,91 +2478,31 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      nombreadmin: '',
-      fechaInicial: new Date().toISOString().substr(0, 10),
-      fechaFinal: new Date().toISOString().substr(0, 10),
-      //Para la alerta
-      banMensaje: false,
-      arrayMensaje: [],
-      colorMensaje: '',
-      //Variable auxiliar
-      exporRep: false
+      dates: ['2019-09-10', '2019-09-20'],
+      mensaje: ''
     };
   },
   methods: {
-    //Exportar a excel
-    exportarExcel: function exportarExcel(event) {
+    descargar: function descargar() {
       var _this = this;
 
-      var dbtm = this;
-      dbtm.arrayMensaje = [];
-      dbtm.exporRep = true;
-
-      if (dbtm.fechaInicial && dbtm.fechaFinal) {
-        if (dbtm.fechaInicial > dbtm.fechaFinal) {
-          dbtm.arrayMensaje.push("El campo Fecha Inicial debe ser menor o igual al campo Fecha Final.");
-          dbtm.banMensaje = true;
-          dbtm.colorMensaje = 'error';
-          dbtm.exporRep = false;
-        } else {
-          axios({
-            url: 'reporteriaExcel',
-            method: "POST",
-            data: {
-              idReporte: dbtm.selectTipoReporte,
-              idTipificacion: dbtm.selectTipificacion,
-              idSubTipificacion: dbtm.selectSubTipificacion,
-              fechaInicial: dbtm.fechaInicial,
-              fechaFinal: dbtm.fechaFinal
-            },
-            responseType: 'blob'
-          }).then(function (response) {
-            if (response.status == 200) {
-              var url = window.URL.createObjectURL(new Blob([response.data]));
-              var link = document.createElement('a');
-              link.href = url;
-              link.setAttribute('download', 'reporte.xlsx'); //or any other extension
-
-              document.body.appendChild(link);
-              link.click();
-            } else if (response.status == 210) {
-              dbtm.arrayMensaje.push("No existen registros para el reporte.");
-              dbtm.banMensaje = true;
-              dbtm.colorMensaje = 'info';
-            }
-
-            _this.exporRep = false;
-          })["catch"](function (error) {// console.log("error " + error);
-          });
-          dbtm.exporRep = false;
-        }
-      } else {
-        dbtm.arrayMensaje.push("Los campos Fecha Inicial y Fecha Final, son obligatorios.");
-        dbtm.banMensaje = true;
-        dbtm.colorMensaje = 'error';
-        dbtm.exporRep = false;
-      }
+      console.log(this.dates);
+      axios.post('reportExcel', {
+        'valor': this.dates
+      }).then(function (response) {
+        _this.mensaje = response.data;
+        console.log(_this.mensaje);
+      });
     }
   },
-  mounted: function mounted() {}
+  computed: {
+    dateRangeText: function dateRangeText() {
+      return this.dates.join(' ~ ');
+    }
+  }
 });
 
 /***/ }),
@@ -40051,132 +39991,68 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    "v-container",
+    "v-row",
     [
-      _c("v-card", { staticStyle: { width: "175px", height: "30px" } }, [
-        _c(
-          "label",
-          {
-            staticClass: "form-group col-md-12 btn btn-primary ",
-            attrs: { for: "reportes" }
-          },
-          [_vm._v("Descarga de Reportes")]
-        )
-      ]),
+      _c(
+        "v-col",
+        { attrs: { cols: "12", sm: "6" } },
+        [
+          _c("v-date-picker", {
+            attrs: { range: "" },
+            model: {
+              value: _vm.dates,
+              callback: function($$v) {
+                _vm.dates = $$v
+              },
+              expression: "dates"
+            }
+          })
+        ],
+        1
+      ),
       _vm._v(" "),
-      _c("hr"),
+      _c(
+        "v-col",
+        { attrs: { cols: "12", sm: "6" } },
+        [
+          _c("v-text-field", {
+            attrs: {
+              label: "Date range",
+              "prepend-icon": "mdi-calendar",
+              readonly: ""
+            },
+            model: {
+              value: _vm.dateRangeText,
+              callback: function($$v) {
+                _vm.dateRangeText = $$v
+              },
+              expression: "dateRangeText"
+            }
+          }),
+          _vm._v("\n    model: " + _vm._s(_vm.dates) + "\n  ")
+        ],
+        1
+      ),
       _vm._v(" "),
-      _c("div", { staticClass: "card" }, [
-        _c(
-          "div",
-          { staticClass: "card-header text-center bg bg-primary" },
-          [
-            _c("font", { attrs: { color: "white" } }, [
-              _vm._v("Reporte Gestion")
-            ])
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c("div", { staticClass: "card-body" }, [
-          _c("form", { attrs: { action: "", method: "POST" } }, [
-            _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-md-5" }, [
-                _c("input", {
-                  staticClass: "form-control",
-                  attrs: {
-                    type: "date",
-                    name: "fecha_inicial",
-                    id: "datepickerInicio",
-                    required: ""
-                  }
-                })
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-5" }, [
-                _c("input", {
-                  staticClass: "form-control",
-                  attrs: {
-                    type: "date",
-                    name: "fecha_final",
-                    id: "datepickerFin",
-                    required: ""
-                  }
-                })
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-2" }, [
-                _c("input", {
-                  attrs: {
-                    type: "hidden",
-                    value: "reporteGestion",
-                    name: "opcionReporte"
-                  }
-                }),
-                _vm._v(" "),
-                _c("input", {
-                  staticClass: "btn btn-primary",
-                  attrs: {
-                    type: "submit",
-                    id: "btnfiltrar",
-                    value: "Descargar"
-                  }
-                })
-              ])
-            ])
-          ])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("hr"),
-      _vm._v(" "),
-      _c("div", { staticClass: "card" }, [
-        _c(
-          "div",
-          { staticClass: "card-header text-center bg bg-primary" },
-          [
-            _c("font", { attrs: { color: "white" } }, [
-              _vm._v("Histórico Agendamiento")
-            ])
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c("div", { staticClass: "card-body" }, [
-          _c("form", { attrs: { action: "", method: "POST" } }, [
-            _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-md-5" }, [
-                _c("input", {
-                  staticClass: "form-control",
-                  attrs: { type: "date", name: "fechaInicial", required: "" }
-                })
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-5" }, [
-                _c("input", {
-                  staticClass: "form-control",
-                  attrs: { type: "date", name: "fechaFinal", required: "" }
-                })
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-2" }, [
-                _c("input", {
-                  attrs: {
-                    type: "hidden",
-                    value: "reporteGestion",
-                    name: "opcionReporte"
-                  }
-                }),
-                _vm._v(" "),
-                _c("input", {
-                  staticClass: "btn btn-primary",
-                  attrs: { type: "submit", value: "Descargar" }
-                })
-              ])
-            ])
-          ])
-        ])
-      ])
+      _c(
+        "v-col",
+        [
+          _c(
+            "v-btn",
+            {
+              staticClass: "white--text align-center",
+              attrs: { color: "indigo", elevation: "8", large: "" },
+              on: {
+                click: function($event) {
+                  return _vm.descargar()
+                }
+              }
+            },
+            [_vm._v("Descargar")]
+          )
+        ],
+        1
+      )
     ],
     1
   )

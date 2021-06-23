@@ -36,4 +36,4 @@ Route::get('/reportes', function (){
 });
 
 /* Aqui pongo la ruta para generar el excel */
-Route::post('reportes-list-excel', 'MasterController@exportExcel')->name('reportes.excel');
+Route::post('reportExcel', 'MasterController@exportExcel');

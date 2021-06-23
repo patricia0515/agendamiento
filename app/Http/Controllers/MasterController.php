@@ -6,6 +6,7 @@ use App\Master;
 use DB;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReportesExport;
 use Carbon\Carbon;
@@ -37,8 +38,12 @@ class MasterController extends Controller
      */
     public function exportExcel(Request $request)
     {
-        $filtro1 = $request->fecha_inicial;
-        $filtro2 = $request->fecha_final;
-        return (new ReportesExport($filtro1, $filtro2))->download('reportes-list.xlsx');
+        
+        // $filtro1 = $request->valor[0];
+        // $filtro2 = $request->valor[1];
+        // return (new ReportesExport($filtro1, $filtro2))->download('reportExcel.xlsx');
+        // $msne = "Hola desde el controlador.";
+        // return response()->json($msne);
+        return Excel::download(new ReportesExport, 'Master.xlsx');
     }
 }

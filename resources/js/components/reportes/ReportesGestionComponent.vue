@@ -1,147 +1,61 @@
 <template>
-    <v-container>
-        <v-card style="width: 175px; height: 30px;">
-            <label for="reportes" class="form-group col-md-12 btn btn-primary ">Descarga de Reportes</label>
-        </v-card>
-        <hr>
-        <div class="card">
-                        <div class="card-header text-center bg bg-primary"><font color="white">Reporte Gestion</font></div>
-
-                        <div class="card-body">
-                            <form action="" method="POST">
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        <input type="date" name="fecha_inicial" id="datepickerInicio" class="form-control" required="">
-                                    </div>
-                                    <div class="col-md-5">
-                                        <input type="date" name="fecha_final"  id="datepickerFin" class="form-control" required="">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="hidden" value="reporteGestion" name="opcionReporte">
-                                        <input type="submit" id="btnfiltrar" class="btn btn-primary" value="Descargar">
-                                    </div>
-                                </div>
-
-                            </form>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="card">
-                        <div class="card-header text-center bg bg-primary"><font color="white">Histórico Agendamiento</font></div>
-
-                        <div class="card-body">
-                            <form action="" method="POST">
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        <input type="date" name="fechaInicial" class="form-control" required="">
-                                    </div>
-                                    <div class="col-md-5">
-                                        <input type="date" name="fechaFinal" class="form-control" required="">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="hidden" value="reporteGestion" name="opcionReporte">
-                                        <input type="submit" class="btn btn-primary" value="Descargar">
-                                    </div>
-                                </div>
-
-                            </form>
-                        </div>
-                    </div>
-    </v-container>
+  <v-row>
+    <v-col
+      cols="12"
+      sm="6"
+    >
+      <v-date-picker
+        v-model="dates"
+        range
+        
+      ></v-date-picker>
+    </v-col>
+    <v-col
+      cols="12"
+      sm="6"
+    >
+      <v-text-field
+        v-model="dateRangeText"
+        label="Date range"
+        prepend-icon="mdi-calendar"
+        readonly
+      ></v-text-field>
+      model: {{ dates }}
+    </v-col>
+    <v-col>
+      <v-btn
+      class="white--text align-center"
+      color="indigo"
+      elevation="8"
+      large
+      @click="descargar()"
+    >Descargar</v-btn>
+    <!-- fin boton -->
+    </v-col>
+  </v-row>
 </template>
 
 <script>
   export default {
     data: () => ({
-        nombreadmin: '',
-
-
-        fechaInicial: new Date().toISOString().substr(0, 10),
-        fechaFinal: new Date().toISOString().substr(0, 10),
-
-       
-        //Para la alerta
-        banMensaje: false,
-        arrayMensaje: [],
-        colorMensaje: '',
-
-        //Variable auxiliar
-        exporRep: false,
-        
+      dates: ['2019-09-10', '2019-09-20'],
+      mensaje: '',
     }),
-
-    
-
     methods: {
-
-      //Exportar a excel
-      exportarExcel: function (event) {
-        
-        let dbtm = this;
-        dbtm.arrayMensaje = [];
-        dbtm.exporRep = true;
-
-        if(dbtm.fechaInicial && dbtm.fechaFinal) {
-          
-          if(dbtm.fechaInicial > dbtm.fechaFinal) {
-            dbtm.arrayMensaje.push("El campo Fecha Inicial debe ser menor o igual al campo Fecha Final.");
-            dbtm.banMensaje = true;
-            dbtm.colorMensaje = 'error';
-            dbtm.exporRep = false;
-            
-          }else{
-            
-            axios({
-                  url: 'reporteriaExcel',
-                  method: "POST",
-                  data: {
-                    idReporte : dbtm.selectTipoReporte,
-                    idTipificacion : dbtm.selectTipificacion,
-                    idSubTipificacion : dbtm.selectSubTipificacion,
-                    fechaInicial : dbtm.fechaInicial,
-                    fechaFinal : dbtm.fechaFinal,
-                  },
-                  responseType: 'blob',
-              })
-              .then(response => {
-
-                if(response.status == 200){
-                    const url = window.URL.createObjectURL(new Blob([response.data]));
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.setAttribute('download', 'reporte.xlsx'); //or any other extension
-                    document.body.appendChild(link);
-                    link.click();
-                }else if(response.status == 210){
-                  dbtm.arrayMensaje.push("No existen registros para el reporte.");
-                  dbtm.banMensaje = true;
-                  dbtm.colorMensaje = 'info';
-                }
-
-                this.exporRep = false;
-              })
-              .catch(error => {
-                  // console.log("error " + error);
-              });
-
-            dbtm.exporRep = false;
-
-          }
-
-        }else{
-          dbtm.arrayMensaje.push("Los campos Fecha Inicial y Fecha Final, son obligatorios.");
-          dbtm.banMensaje = true;
-          dbtm.colorMensaje = 'error';
-          dbtm.exporRep = false;
-        }
-        
-      },
-
+      descargar(){
+        console.log(this.dates)
+        axios.post('reportExcel',{
+          'valor': this.dates,
+        }).then(response=>{
+          this.mensaje = response.data;
+          console.log(this.mensaje)
+        })
+      }
     },
-
-
-
-    mounted() {
+    computed: {
+      dateRangeText () {
+        return this.dates.join(' ~ ')
+      },
     },
 
   }
