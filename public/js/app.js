@@ -2280,6 +2280,55 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     var _ref;
@@ -2446,7 +2495,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         console.log('FALTA LLENAR CAMPOS');
       } else {
         console.log('Todo en orden para guardar la agenda.');
-        this.alert = false;
+        this.dialog = false;
       }
 
       console.log('TERMINO EL FORM PASO A PASO');
@@ -39546,6 +39595,8 @@ var render = function() {
                                                             "Anterior",
                                                           "finish-button-text":
                                                             "Guardar y Procesar",
+                                                          "starr-index":
+                                                            "step1",
                                                           color: "#0000FF",
                                                           shape: "circle",
                                                           title: "",
