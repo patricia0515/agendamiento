@@ -2,11 +2,11 @@
   
     <v-container>
       <v-card style="width: 175px; height: 30px;">
-        <a class="form-group col-md-12 btn btn-primary" href="">Nueva Gestión</a>
+        <a class="form-group col-md-12 btn " href="">Nueva Gestión</a>
       </v-card>
       <br>
       <v-card style="width: 175px; height: 30px;">
-        <a class="form-group col-md-12 btn btn-primary" href="">Gestiones</a>
+        <a class="form-group col-md-12 btn " href="">Gestiones</a>
         
       </v-card>
       <v-flex>
