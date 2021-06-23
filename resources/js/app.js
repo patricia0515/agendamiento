@@ -12,6 +12,11 @@ window.Vue = require("vue");
 import Vuetify from "vuetify";
 Vue.use(Vuetify);
 
+import Vue from "vue";
+import excel from "vue-excel-export";
+
+Vue.use(excel);
+
 //Para dividir el flujo de los formularios
 import VueFormWizard from "vue-form-wizard";
 import "vue-form-wizard/dist/vue-form-wizard.min.css";
@@ -38,7 +43,10 @@ Vue.component(
     require("./components/asesor/BuscarPersonaComponent.vue").default
 );
 
-Vue.component("reportesgestion-component", require("./components/reportes/ReportesGestionComponent.vue").default);
+Vue.component(
+    "reportesgestion-component",
+    require("./components/reportes/ReportesGestionComponent.vue").default
+);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
