@@ -2289,6 +2289,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       formulariogestion: 0,
       buscarValor: '',
       arrayDataPersona: [],
+      arrayDataTipoId: [],
+      arrayDataMunicipios: [],
       arrayGestion: [],
       //Variables para el formaulario
       idmaster: 0,
@@ -2296,14 +2298,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       nombre_persona: '',
       apellido_persona: '',
       correo_persona: '',
-      ciudad_persona: '',
-      tipo_doc_persona: '',
+      ciudad_persona: {
+        id: '',
+        nombre_municipio: ''
+      },
+      tipo_doc_persona: {
+        idtipo_identificacion: '',
+        detalle: ''
+      },
       telefono1_persona: '',
       telefono2_persona: '',
       fecha_agendamiento: '',
       direcc_residencia_persona: '',
       barrio_persona: ''
-    }, _defineProperty(_ref, "fecha_agendamiento", ''), _defineProperty(_ref, "hora_agendamiento", ''), _defineProperty(_ref, "items_hora", ['08:00-10:00', '09:00-11:00', '10:00-12:00', '13:00-15:00', '14:00-16:00', '15:00-17:00']), _defineProperty(_ref, "hora", ''), _defineProperty(_ref, "minimo", new Date().toISOString().substr(0, 10)), _defineProperty(_ref, "alert", false), _defineProperty(_ref, "mensajeAlert", ''), _defineProperty(_ref, "typeAlert", ''), _defineProperty(_ref, "panel", [0, 1]), _defineProperty(_ref, "disabled", true), _defineProperty(_ref, "readonly", true), _defineProperty(_ref, "select", null), _defineProperty(_ref, "tipificacion", []), _defineProperty(_ref, "sub_tipificacion", []), _defineProperty(_ref, "id_tip", 0), _defineProperty(_ref, "dialog", false), _ref;
+    }, _defineProperty(_ref, "fecha_agendamiento", ''), _defineProperty(_ref, "hora_agendamiento", ''), _defineProperty(_ref, "items_hora", ['08:00-10:00', '09:00-11:00', '10:00-12:00', '13:00-15:00', '14:00-16:00', '15:00-17:00']), _defineProperty(_ref, "minimo", new Date().toISOString().substr(0, 10)), _defineProperty(_ref, "date", new Date().toISOString().substr(0, 10)), _defineProperty(_ref, "alert", false), _defineProperty(_ref, "mensajeAlert", []), _defineProperty(_ref, "typeAlert", ''), _defineProperty(_ref, "colorMen", ''), _defineProperty(_ref, "panel", [0, 1]), _defineProperty(_ref, "panel1", [0, 0]), _defineProperty(_ref, "disabled", true), _defineProperty(_ref, "readonly", true), _defineProperty(_ref, "select", null), _defineProperty(_ref, "tipificacion", []), _defineProperty(_ref, "sub_tipificacion", []), _defineProperty(_ref, "id_tip", 0), _defineProperty(_ref, "dialog", false), _ref;
   },
   methods: {
     ////Validaciones solo Números
@@ -2323,42 +2331,69 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this = this;
 
       console.log('Hola, desde la consola');
-      this.arrayMensaje = [];
       this.limpiarDatos();
       this.arrayDataPersona = [];
-      this.mensajeAlert = '';
+      this.arrayDataTipoId = [];
+      this.arrayDataMunicipios = [];
+      this.mensajeAlert = [];
 
       if (!this.buscarValor) {
         this.mensajeAlert = 'EL campo Cédula es requerido.';
         this.typeAlert = 'error';
         this.alert = true;
+        this.colorMen = '#FF0033';
       } else {
         console.log(this.buscarValor);
         axios.post('consultaPersona', {
           'valor': this.buscarValor
         }).then(function (response) {
-          _this.arrayDataPersona = response.data; // dbtm.arrayGestionLog = response.data[3];
+          _this.arrayDataPersona = response.data[0];
+          _this.arrayDataMunicipios = response.data[1];
+          _this.arrayDataTipoId = response.data[2]; // dbtm.arrayGestionLog = response.data[3];
 
           if (response.status == 210) {
             console.log('LA CONSULTA NO TRAJO RESULTADOS');
             _this.mensajeAlert = "No se encontro cliente con el numero de cédula " + _this.buscarValor + ".";
             _this.typeAlert = 'info';
             _this.alert = true;
+            _this.colorMen = '#FFC30F';
           } else {
-            console.log('Tenemos un resultado con la consulta');
-            console.log(_this.arrayDataPersona);
-            _this.formulariogestion = 1; //Mensaje de alerta
+            _this.formulariogestion = 1;
+            _this.y = _this.arrayDataMunicipios.length; //Mensaje de alerta
 
             _this.alert = true;
             _this.typeAlert = 'success';
+            _this.colorMen = '#008000';
             _this.mensajeAlert = '¡Bien hecho! Registro encontrado.';
             _this.disabled = false, _this.idmaster = _this.arrayDataPersona[0].idmaster;
             _this.num_doc_persona = _this.arrayDataPersona[0].num_doc_persona;
             _this.nombre_persona = _this.arrayDataPersona[0].nombre_persona;
             _this.apellido_persona = _this.arrayDataPersona[0].apellido_persona;
             _this.correo_persona = _this.arrayDataPersona[0].correo_persona;
-            _this.ciudad_persona = _this.arrayDataPersona[0].ciudad_persona;
-            _this.tipo_doc_persona = _this.arrayDataPersona[0].tipo_doc_persona;
+            _this.ciudad_persona.id = _this.arrayDataPersona[0].ciudad_persona;
+            console.log('ESTE ES EL ID CIUDAD QUE ME LLEGA DE LA CONSULTA');
+            console.log(_this.ciudad_persona.id);
+
+            for (var x = 0; x < _this.arrayDataMunicipios.length; x++) {
+              if (_this.ciudad_persona.id == _this.arrayDataMunicipios[x].id) {
+                _this.ciudad_persona.nombre_municipio = _this.arrayDataMunicipios[x].nombre_municipio;
+              }
+            }
+
+            console.log('ESTE ES EL OBJETO CIUDAD QUE SALE DEL FOR');
+            console.log(_this.ciudad_persona);
+            _this.tipo_doc_persona.idtipo_identificacion = _this.arrayDataPersona[0].tipo_doc_persona;
+            console.log('ESTE ES EL ID DOCUMENTO QUE ME LLEGA DE LA CONSULTA');
+            console.log(_this.tipo_doc_persona.idtipo_identificacion);
+
+            for (var _x = 0; _x < _this.arrayDataTipoId.length; _x++) {
+              if (_this.tipo_doc_persona.idtipo_identificacion == _this.arrayDataTipoId[_x].idtipo_identificacion) {
+                _this.tipo_doc_persona.detalle = _this.arrayDataTipoId[_x].detalle;
+              }
+            }
+
+            console.log('ESTE ES EL OBJETO DOCUMENTO QUE SALE DEL FOR');
+            console.log(_this.tipo_doc_persona);
             _this.telefono1_persona = _this.arrayDataPersona[0].telefono1_persona;
             _this.telefono2_persona = _this.arrayDataPersona[0].telefono2_persona;
             _this.fecha_agendamiento = _this.arrayDataPersona[0].fecha_agendamiento;
@@ -2368,7 +2403,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             _this.listaTipificacion();
           }
         })["catch"](function (error) {
-          console.log("error " + error);
+          console.log("error , parece que es la consulta " + error);
         });
       }
     },
@@ -2403,10 +2438,37 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     },
     agendarCita: function agendarCita() {
+      this.validarForm();
+
+      if (this.mensajeAlert.length > 0) {
+        this.colorMen = '#FF0033';
+        this.alert = true;
+        console.log('FALTA LLENAR CAMPOS');
+      } else {
+        console.log('Todo en orden para guardar la agenda.');
+        this.alert = false;
+      }
+
       console.log('TERMINO EL FORM PASO A PASO');
-      console.log(this.hora);
-      console.log(this.fecha_agendamiento);
-      this.dialog = false;
+    },
+    validarForm: function validarForm() {
+      this.mensajeAlert = [];
+
+      if (this.tipo_doc_persona == '') {
+        this.mensajeAlert.push("Debe seleccionar el tipo de documento.");
+      }
+
+      if (this.nombre_persona == '') {
+        this.mensajeAlert.push("Digite el nombre.");
+      }
+
+      if (this.apellido_persona == '') {
+        this.mensajeAlert.push("Digite el apellido.");
+      }
+
+      if (this.hora_agendamiento == '') {
+        this.mensajeAlert.push("Seleccione hora de agendamiento.");
+      }
     },
     ////Limpiar los datos del cliente cuando se realiza una nueva busqueda
     limpiarDatos: function limpiarDatos() {
@@ -2414,17 +2476,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.idmaster = 0;
       this.formulariogestion = 0;
       this.arrayDataPersona = [];
+      this.arrayDataTipoId = [];
+      this.arrayDataMunicipios = [];
       this.arrayGestion = [];
       this.tipificacion = [];
       this.sub_tipificacion = [];
       this.id_tip = 0; //Para Alerta
 
       this.alert = false;
-      this.mensajeAlert = '';
-      this.typeAlert = ''; //Para el panel de expansión
+      this.mensajeAlert = [];
+      this.typeAlert = '';
+      this.colorMen = ''; //Para el panel de expansión
 
       this.panel = [0, 1];
-      this.disabled = true;
+      this.disabled = true; //gestión hor fecha agendamiento
+
+      this.fecha_agendamiento = '';
+      this.date = new Date().toISOString().substr(0, 10);
+      this.hora_agendamiento = '';
     }
   },
   mounted: function mounted() {}
@@ -38848,132 +38917,172 @@ var render = function() {
       _c(
         "v-flex",
         [
-          _c("v-container", [
+          [
             _c(
               "div",
               [
                 _c(
-                  "v-row",
+                  "v-expansion-panels",
+                  {
+                    attrs: {
+                      readonly: _vm.readonly,
+                      disabled: _vm.disabled,
+                      multiple: ""
+                    },
+                    model: {
+                      value: _vm.panel1,
+                      callback: function($$v) {
+                        _vm.panel1 = $$v
+                      },
+                      expression: "panel1"
+                    }
+                  },
                   [
-                    _c("v-col", { attrs: { cols: "12", sm: "2" } }),
-                    _vm._v(" "),
                     _c(
-                      "v-flex",
-                      { attrs: { "xs12:": "" } },
-                      [
-                        _c("v-text-field", {
-                          attrs: {
-                            solo: "",
-                            outlined: "",
-                            required: "",
-                            maxlength: "20",
-                            label: "Número de cédula",
-                            clearable: ""
-                          },
-                          on: {
-                            keypress: function($event) {
-                              return _vm.isNumber($event)
-                            },
-                            keyup: function($event) {
-                              if (
-                                !$event.type.indexOf("key") &&
-                                _vm._k(
-                                  $event.keyCode,
-                                  "enter",
-                                  13,
-                                  $event.key,
-                                  "Enter"
-                                )
-                              ) {
-                                return null
-                              }
-                              return _vm.buscarCliente()
-                            },
-                            paste: function($event) {
-                              $event.preventDefault()
-                            }
-                          },
-                          model: {
-                            value: _vm.buscarValor,
-                            callback: function($$v) {
-                              _vm.buscarValor = $$v
-                            },
-                            expression: "buscarValor"
-                          }
-                        })
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "v-col",
-                      { attrs: { cols: "12", md: "4" } },
+                      "v-expansion-panel",
                       [
                         _c(
-                          "v-btn",
+                          "v-expansion-panel-header",
                           {
-                            attrs: {
-                              color: "primary",
-                              elevation: "9",
-                              large: ""
-                            },
-                            on: {
-                              click: function($event) {
-                                return _vm.buscarCliente()
-                              }
-                            }
+                            staticClass: "subheading white--text",
+                            attrs: { color: "indigo" }
                           },
-                          [_vm._v("Buscar")]
-                        )
+                          [
+                            _vm._v(
+                              "\n            Gestionar Agendamientos\n            "
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c("v-expansion-panel-content", [
+                          _c(
+                            "div",
+                            {
+                              staticClass:
+                                " d-flex justify-space-around align-center mb-6 pt-3 mt-4 mr-15 ml-15 "
+                            },
+                            [
+                              _c(
+                                "v-row",
+                                {
+                                  staticClass:
+                                    " d-flex justify-space-around align-center mb-6 pt-3 mt-4 "
+                                },
+                                [
+                                  _c(
+                                    "v-col",
+                                    [
+                                      _c("v-text-field", {
+                                        attrs: {
+                                          solo: "",
+                                          outlined: "",
+                                          required: "",
+                                          maxlength: "20",
+                                          label: "Número de cédula",
+                                          clearable: ""
+                                        },
+                                        on: {
+                                          keypress: function($event) {
+                                            return _vm.isNumber($event)
+                                          },
+                                          keyup: function($event) {
+                                            if (
+                                              !$event.type.indexOf("key") &&
+                                              _vm._k(
+                                                $event.keyCode,
+                                                "enter",
+                                                13,
+                                                $event.key,
+                                                "Enter"
+                                              )
+                                            ) {
+                                              return null
+                                            }
+                                            return _vm.buscarCliente()
+                                          },
+                                          paste: function($event) {
+                                            $event.preventDefault()
+                                          }
+                                        },
+                                        model: {
+                                          value: _vm.buscarValor,
+                                          callback: function($$v) {
+                                            _vm.buscarValor = $$v
+                                          },
+                                          expression: "buscarValor"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-btn",
+                                    {
+                                      staticClass: "white--text align-center",
+                                      attrs: {
+                                        color: "indigo",
+                                        elevation: "8",
+                                        large: ""
+                                      },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.buscarCliente()
+                                        }
+                                      }
+                                    },
+                                    [_vm._v("Buscar")]
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ])
                       ],
                       1
                     )
                   ],
                   1
-                ),
-                _vm._v(" "),
+                )
+              ],
+              1
+            )
+          ],
+          _vm._v(" "),
+          _c("v-flex", [
+            _c(
+              "div",
+              [
                 _c(
-                  "v-row",
-                  [
-                    [
-                      _c("v-flex", [
-                        _c(
-                          "div",
-                          [
-                            _c(
-                              "v-alert",
-                              {
-                                attrs: {
-                                  border: "left",
-                                  "close-text": "Close Alert",
-                                  type: _vm.typeAlert,
-                                  "colored-border": "",
-                                  dismissible: ""
-                                },
-                                model: {
-                                  value: _vm.alert,
-                                  callback: function($$v) {
-                                    _vm.alert = $$v
-                                  },
-                                  expression: "alert"
-                                }
-                              },
-                              [_c("strong", [_vm._v(_vm._s(_vm.mensajeAlert))])]
-                            )
-                          ],
-                          1
-                        )
-                      ])
-                    ]
-                  ],
-                  2
+                  "v-alert",
+                  {
+                    attrs: {
+                      border: "top",
+                      elevation: "3",
+                      "close-text": "Close Alert",
+                      color: _vm.colorMen,
+                      type: _vm.typeAlert,
+                      "colored-border": "",
+                      dismissible: ""
+                    },
+                    model: {
+                      value: _vm.alert,
+                      callback: function($$v) {
+                        _vm.alert = $$v
+                      },
+                      expression: "alert"
+                    }
+                  },
+                  [_c("strong", [_vm._v(_vm._s(_vm.mensajeAlert))])]
                 )
               ],
               1
             )
           ])
         ],
-        1
+        2
       ),
       _vm._v(" "),
       _vm.formulariogestion == 1
@@ -39079,7 +39188,9 @@ var render = function() {
                                               ),
                                               _c("td", [
                                                 _vm._v(
-                                                  _vm._s(_vm.tipo_doc_persona)
+                                                  _vm._s(
+                                                    _vm.tipo_doc_persona.detalle
+                                                  )
                                                 )
                                               ])
                                             ])
@@ -39171,7 +39282,7 @@ var render = function() {
                                   ],
                                   null,
                                   false,
-                                  455998918
+                                  2587783801
                                 )
                               })
                             ]
@@ -39283,7 +39394,7 @@ var render = function() {
                                         {
                                           attrs: {
                                             transition: "dialog-top-transition",
-                                            "max-width": "600",
+                                            "max-width": "900",
                                             persistent: ""
                                           },
                                           model: {
@@ -39365,6 +39476,66 @@ var render = function() {
                                                       ]
                                                     ),
                                                     _vm._v(" "),
+                                                    _vm._l(
+                                                      _vm.mensajeAlert,
+                                                      function(mensaje, index) {
+                                                        return _c(
+                                                          "v-snackbar",
+                                                          {
+                                                            key: index,
+                                                            attrs: {
+                                                              color:
+                                                                _vm.colorMen,
+                                                              right: "",
+                                                              top: ""
+                                                            },
+                                                            model: {
+                                                              value: _vm.alert,
+                                                              callback: function(
+                                                                $$v
+                                                              ) {
+                                                                _vm.alert = $$v
+                                                              },
+                                                              expression:
+                                                                "alert"
+                                                            }
+                                                          },
+                                                          [
+                                                            _vm._v(
+                                                              "\n                                  " +
+                                                                _vm._s(
+                                                                  mensaje
+                                                                ) +
+                                                                "\n                                  "
+                                                            ),
+                                                            _c(
+                                                              "v-btn",
+                                                              {
+                                                                attrs: {
+                                                                  color:
+                                                                    "black",
+                                                                  text: ""
+                                                                },
+                                                                on: {
+                                                                  click: function(
+                                                                    $event
+                                                                  ) {
+                                                                    _vm.alert = false
+                                                                  }
+                                                                }
+                                                              },
+                                                              [
+                                                                _vm._v(
+                                                                  " Cerrar "
+                                                                )
+                                                              ]
+                                                            )
+                                                          ],
+                                                          1
+                                                        )
+                                                      }
+                                                    ),
+                                                    _vm._v(" "),
                                                     _c(
                                                       "form-wizard",
                                                       {
@@ -39391,7 +39562,8 @@ var render = function() {
                                                           {
                                                             attrs: {
                                                               title:
-                                                                "Información Personal"
+                                                                "Información Personal",
+                                                              step: "step1"
                                                             }
                                                           },
                                                           [
@@ -39486,30 +39658,44 @@ var render = function() {
                                                                     }
                                                                   },
                                                                   [
-                                                                    _c(
-                                                                      "v-text-field",
-                                                                      {
-                                                                        attrs: {
-                                                                          label:
-                                                                            "Tipo de Documento (*)",
-                                                                          outlined:
-                                                                            ""
-                                                                        },
-                                                                        model: {
-                                                                          value:
-                                                                            _vm.tipo_doc_persona,
-                                                                          callback: function(
-                                                                            $$v
-                                                                          ) {
-                                                                            _vm.tipo_doc_persona = $$v
+                                                                    [
+                                                                      _c(
+                                                                        "v-select",
+                                                                        {
+                                                                          attrs: {
+                                                                            items:
+                                                                              _vm.arrayDataTipoId,
+                                                                            "item-text":
+                                                                              "detalle",
+                                                                            "item-value":
+                                                                              "idtipo_identificacion",
+                                                                            label:
+                                                                              "Tipo de Documento",
+                                                                            outlined:
+                                                                              ""
                                                                           },
-                                                                          expression:
-                                                                            "tipo_doc_persona"
+                                                                          model: {
+                                                                            value:
+                                                                              _vm
+                                                                                .tipo_doc_persona
+                                                                                .idtipo_identificacion,
+                                                                            callback: function(
+                                                                              $$v
+                                                                            ) {
+                                                                              _vm.$set(
+                                                                                _vm.tipo_doc_persona,
+                                                                                "idtipo_identificacion",
+                                                                                $$v
+                                                                              )
+                                                                            },
+                                                                            expression:
+                                                                              "tipo_doc_persona.idtipo_identificacion"
+                                                                          }
                                                                         }
-                                                                      }
-                                                                    )
+                                                                      )
+                                                                    ]
                                                                   ],
-                                                                  1
+                                                                  2
                                                                 ),
                                                                 _vm._v(" "),
                                                                 _c(
@@ -39644,30 +39830,44 @@ var render = function() {
                                                                     }
                                                                   },
                                                                   [
-                                                                    _c(
-                                                                      "v-text-field",
-                                                                      {
-                                                                        attrs: {
-                                                                          label:
-                                                                            "Municipio (*)",
-                                                                          outlined:
-                                                                            ""
-                                                                        },
-                                                                        model: {
-                                                                          value:
-                                                                            _vm.ciudad_persona,
-                                                                          callback: function(
-                                                                            $$v
-                                                                          ) {
-                                                                            _vm.ciudad_persona = $$v
+                                                                    [
+                                                                      _c(
+                                                                        "v-autocomplete",
+                                                                        {
+                                                                          attrs: {
+                                                                            items:
+                                                                              _vm.arrayDataMunicipios,
+                                                                            "item-text":
+                                                                              "nombre_municipio",
+                                                                            "item-value":
+                                                                              "id",
+                                                                            label:
+                                                                              "Municipio",
+                                                                            outlined:
+                                                                              ""
                                                                           },
-                                                                          expression:
-                                                                            "ciudad_persona"
+                                                                          model: {
+                                                                            value:
+                                                                              _vm
+                                                                                .ciudad_persona
+                                                                                .id,
+                                                                            callback: function(
+                                                                              $$v
+                                                                            ) {
+                                                                              _vm.$set(
+                                                                                _vm.ciudad_persona,
+                                                                                "id",
+                                                                                $$v
+                                                                              )
+                                                                            },
+                                                                            expression:
+                                                                              "ciudad_persona.id"
+                                                                          }
                                                                         }
-                                                                      }
-                                                                    )
+                                                                      )
+                                                                    ]
                                                                   ],
-                                                                  1
+                                                                  2
                                                                 ),
                                                                 _vm._v(" "),
                                                                 _c(
@@ -39793,14 +39993,20 @@ var render = function() {
                                                         _c(
                                                           "tab-content",
                                                           {
+                                                            staticClass: "p-4",
                                                             attrs: {
                                                               title:
-                                                                "Agendamiento"
+                                                                "Agendamiento",
+                                                              step: "step2"
                                                             }
                                                           },
                                                           [
                                                             _c(
                                                               "v-row",
+                                                              {
+                                                                staticClass:
+                                                                  "justify-center"
+                                                              },
                                                               [
                                                                 _c(
                                                                   "v-card",
@@ -39813,23 +40019,36 @@ var render = function() {
                                                                             "Fecha Agendamiento (*)",
                                                                           placeholder:
                                                                             "AAAA-MM-DD",
-                                                                          "full-width":
-                                                                            "",
+                                                                          color:
+                                                                            "indigo",
+                                                                          width:
+                                                                            "180",
+                                                                          elevation:
+                                                                            "15",
                                                                           locale:
                                                                             "es-co",
                                                                           min:
-                                                                            _vm.minimo
+                                                                            _vm.minimo,
+                                                                          landscape: true
+                                                                        },
+                                                                        on: {
+                                                                          change: function(
+                                                                            $event
+                                                                          ) {
+                                                                            _vm.fecha_agendamiento =
+                                                                              _vm.date
+                                                                          }
                                                                         },
                                                                         model: {
                                                                           value:
-                                                                            _vm.fecha_agendamiento,
+                                                                            _vm.date,
                                                                           callback: function(
                                                                             $$v
                                                                           ) {
-                                                                            _vm.fecha_agendamiento = $$v
+                                                                            _vm.date = $$v
                                                                           },
                                                                           expression:
-                                                                            "fecha_agendamiento"
+                                                                            "date"
                                                                         }
                                                                       }
                                                                     )
@@ -39840,6 +40059,8 @@ var render = function() {
                                                                 _c(
                                                                   "v-col",
                                                                   {
+                                                                    staticClass:
+                                                                      "pa-3",
                                                                     attrs: {
                                                                       cols:
                                                                         "12",
@@ -39853,6 +40074,8 @@ var render = function() {
                                                                         attrs: {
                                                                           items:
                                                                             _vm.items_hora,
+                                                                          "full-width":
+                                                                            "",
                                                                           label:
                                                                             "Hora Agendamiento (*)",
                                                                           outlined:
@@ -39860,31 +40083,18 @@ var render = function() {
                                                                         },
                                                                         model: {
                                                                           value:
-                                                                            _vm.hora,
+                                                                            _vm.hora_agendamiento,
                                                                           callback: function(
                                                                             $$v
                                                                           ) {
-                                                                            _vm.hora = $$v
+                                                                            _vm.hora_agendamiento = $$v
                                                                           },
                                                                           expression:
-                                                                            "hora"
+                                                                            "hora_agendamiento"
                                                                         }
                                                                       }
-                                                                    )
-                                                                  ],
-                                                                  1
-                                                                ),
-                                                                _vm._v(" "),
-                                                                _c(
-                                                                  "v-col",
-                                                                  {
-                                                                    attrs: {
-                                                                      cols:
-                                                                        "12",
-                                                                      md: "12"
-                                                                    }
-                                                                  },
-                                                                  [
+                                                                    ),
+                                                                    _vm._v(" "),
                                                                     _c(
                                                                       "v-textarea",
                                                                       {
@@ -39911,7 +40121,7 @@ var render = function() {
                                                       1
                                                     )
                                                   ],
-                                                  1
+                                                  2
                                                 ),
                                                 _vm._v(" "),
                                                 _c(
