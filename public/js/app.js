@@ -1908,8 +1908,17 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2331,36 +2340,55 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
-    var _ref;
-
-    return _ref = {
-      nombreAsesor: '',
+    return {
+      nombreAsesor: "",
       formulariogestion: 0,
-      buscarValor: '',
+      infoPersona: 0,
+      buscarValor: "",
       arrayDataPersona: [],
       arrayDataTipoId: [],
       arrayDataMunicipios: [],
       arrayGestion: [],
       //Variables para el formaulario
       idmaster: 0,
-      num_doc_persona: '',
-      nombre_persona: '',
-      apellido_persona: '',
-      correo_persona: '',
-      ciudad_persona: {
-        id: '',
-        nombre_municipio: ''
-      },
-      tipo_doc_persona: {
-        idtipo_identificacion: '',
-        detalle: ''
-      },
-      telefono1_persona: '',
-      telefono2_persona: '',
-      fecha_agendamiento: '',
-      direcc_residencia_persona: '',
-      barrio_persona: ''
-    }, _defineProperty(_ref, "fecha_agendamiento", ''), _defineProperty(_ref, "hora_agendamiento", ''), _defineProperty(_ref, "items_hora", ['08:00-10:00', '09:00-11:00', '10:00-12:00', '13:00-15:00', '14:00-16:00', '15:00-17:00']), _defineProperty(_ref, "minimo", new Date().toISOString().substr(0, 10)), _defineProperty(_ref, "date", new Date().toISOString().substr(0, 10)), _defineProperty(_ref, "alert", false), _defineProperty(_ref, "mensajeAlert", []), _defineProperty(_ref, "typeAlert", ''), _defineProperty(_ref, "colorMen", ''), _defineProperty(_ref, "panel", [0, 1]), _defineProperty(_ref, "panel1", [0, 0]), _defineProperty(_ref, "disabled", true), _defineProperty(_ref, "readonly", true), _defineProperty(_ref, "select", null), _defineProperty(_ref, "tipificacion", []), _defineProperty(_ref, "sub_tipificacion", []), _defineProperty(_ref, "id_tip", 0), _defineProperty(_ref, "dialog", false), _ref;
+      num_doc_persona: "",
+      nombre_persona: "",
+      apellido_persona: "",
+      correo_persona: "",
+      ciudad_persona: 0,
+      municipio: "",
+      tipo_doc_persona: 0,
+      tip_doc: "",
+      telefono1_persona: "",
+      telefono2_persona: "",
+      direcc_residencia_persona: "",
+      barrio_persona: "",
+      //para la fecha y hora de agendamiento
+      fecha_agendamiento: "",
+      hora_agendamiento: "",
+      items_hora: ["08:00-10:00", "09:00-11:00", "10:00-12:00", "13:00-15:00", "14:00-16:00", "15:00-17:00"],
+
+      /* Dejo la fecha minima tomando en cuenta el día calendario del equipo (Pilas no cuenta el dia actual) */
+      minimo: new Date().toISOString().substr(0, 10),
+      date: new Date().toISOString().substr(0, 10),
+      //Variables para los mensajes de alerta
+      alert: false,
+      mensajeAlert: [],
+      typeAlert: "",
+      colorMen: "",
+      //Para el panel de expansión
+      panel: [0, 1],
+      panel1: [0, 0],
+      disabled: true,
+      readonly: true,
+      //para el select
+      select: null,
+      tipificacion: [],
+      sub_tipificacion: [],
+      observ_persona: "",
+      //Para el formulario flotante
+      dialog: false
+    };
   },
   methods: {
     ////Validaciones solo Números
@@ -2370,7 +2398,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
         evt.preventDefault();
-        ;
       } else {
         return true;
       }
@@ -2379,7 +2406,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     buscarCliente: function buscarCliente() {
       var _this = this;
 
-      console.log('Hola, desde la consola');
       this.limpiarDatos();
       this.arrayDataPersona = [];
       this.arrayDataTipoId = [];
@@ -2387,62 +2413,44 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.mensajeAlert = [];
 
       if (!this.buscarValor) {
-        this.mensajeAlert = 'EL campo Cédula es requerido.';
-        this.typeAlert = 'error';
+        this.mensajeAlert = "EL campo Cédula es requerido.";
+        this.typeAlert = "error";
         this.alert = true;
-        this.colorMen = '#FF0033';
+        this.colorMen = "#FF0033";
       } else {
-        console.log(this.buscarValor);
-        axios.post('consultaPersona', {
-          'valor': this.buscarValor
+        axios.post("consultaPersona", {
+          valor: this.buscarValor
         }).then(function (response) {
-          _this.arrayDataPersona = response.data[0];
-          _this.arrayDataMunicipios = response.data[1];
-          _this.arrayDataTipoId = response.data[2]; // dbtm.arrayGestionLog = response.data[3];
-
           if (response.status == 210) {
-            console.log('LA CONSULTA NO TRAJO RESULTADOS');
-            _this.mensajeAlert = "No se encontro cliente con el numero de cédula " + _this.buscarValor + ".";
-            _this.typeAlert = 'info';
-            _this.alert = true;
-            _this.colorMen = '#FFC30F';
-          } else {
+            _this.arrayDataMunicipios = response.data[0];
+            _this.arrayDataTipoId = response.data[1];
             _this.formulariogestion = 1;
-            _this.y = _this.arrayDataMunicipios.length; //Mensaje de alerta
+            _this.mensajeAlert = "No se encontro cliente con el numero de cédula " + _this.buscarValor + ".";
+            _this.typeAlert = "info";
+            _this.alert = true;
+            _this.colorMen = "#FFC30F";
+
+            _this.listaTipificacion();
+          } else {
+            _this.arrayDataPersona = response.data[0];
+            _this.arrayDataMunicipios = response.data[1];
+            _this.arrayDataTipoId = response.data[2];
+            _this.formulariogestion = 1;
+            _this.infoPersona = 1; //Mensaje de alerta
 
             _this.alert = true;
-            _this.typeAlert = 'success';
-            _this.colorMen = '#008000';
-            _this.mensajeAlert = '¡Bien hecho! Registro encontrado.';
+            _this.typeAlert = "success";
+            _this.colorMen = "#008000";
+            _this.mensajeAlert = "¡Bien hecho! Registro encontrado.";
             _this.disabled = false, _this.idmaster = _this.arrayDataPersona[0].idmaster;
             _this.num_doc_persona = _this.arrayDataPersona[0].num_doc_persona;
             _this.nombre_persona = _this.arrayDataPersona[0].nombre_persona;
             _this.apellido_persona = _this.arrayDataPersona[0].apellido_persona;
             _this.correo_persona = _this.arrayDataPersona[0].correo_persona;
-            _this.ciudad_persona.id = _this.arrayDataPersona[0].ciudad_persona;
-            console.log('ESTE ES EL ID CIUDAD QUE ME LLEGA DE LA CONSULTA');
-            console.log(_this.ciudad_persona.id);
-
-            for (var x = 0; x < _this.arrayDataMunicipios.length; x++) {
-              if (_this.ciudad_persona.id == _this.arrayDataMunicipios[x].id) {
-                _this.ciudad_persona.nombre_municipio = _this.arrayDataMunicipios[x].nombre_municipio;
-              }
-            }
-
-            console.log('ESTE ES EL OBJETO CIUDAD QUE SALE DEL FOR');
-            console.log(_this.ciudad_persona);
-            _this.tipo_doc_persona.idtipo_identificacion = _this.arrayDataPersona[0].tipo_doc_persona;
-            console.log('ESTE ES EL ID DOCUMENTO QUE ME LLEGA DE LA CONSULTA');
-            console.log(_this.tipo_doc_persona.idtipo_identificacion);
-
-            for (var _x = 0; _x < _this.arrayDataTipoId.length; _x++) {
-              if (_this.tipo_doc_persona.idtipo_identificacion == _this.arrayDataTipoId[_x].idtipo_identificacion) {
-                _this.tipo_doc_persona.detalle = _this.arrayDataTipoId[_x].detalle;
-              }
-            }
-
-            console.log('ESTE ES EL OBJETO DOCUMENTO QUE SALE DEL FOR');
-            console.log(_this.tipo_doc_persona);
+            _this.ciudad_persona = _this.arrayDataPersona[0].ciudad_persona;
+            _this.municipio = _this.arrayDataPersona[0].municipio;
+            _this.tipo_doc_persona = _this.arrayDataPersona[0].tipo_doc_persona;
+            _this.tip_doc = _this.arrayDataPersona[0].tip_doc;
             _this.telefono1_persona = _this.arrayDataPersona[0].telefono1_persona;
             _this.telefono2_persona = _this.arrayDataPersona[0].telefono2_persona;
             _this.fecha_agendamiento = _this.arrayDataPersona[0].fecha_agendamiento;
@@ -2461,27 +2469,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this2 = this;
 
       this.tipificacion = [];
-      axios.post('listar-tipificaciones', {
-        'estado': 1
+      axios.post("listar-tipificaciones", {
+        estado: 1
       }).then(function (response) {
         _this2.tipificacion = response.data;
-        console.log('RESULTADO DE LA CONSULTA TIPIFICACIONES');
-        console.log(_this2.tipificacion);
-      })["catch"](function (error) {
-        console.log("error " + error);
-      });
-    },
-    //Listar Subtipificaciones
-    listaSubtipificacion: function listaSubtipificacion() {
-      var _this3 = this;
-
-      this.sub_tipificacion = [];
-      axios.post('listar-subtipificaciones', {
-        'id': this.id_tip
-      }).then(function (response) {
-        _this3.sub_tipificacion = response.data;
-        console.log('RESULTADO DE LA CONSULTA SUBTIPIFICACIONES');
-        console.log(_this3.sub_tipificacion);
       })["catch"](function (error) {
         console.log("error " + error);
       });
@@ -2490,41 +2481,90 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.validarForm();
 
       if (this.mensajeAlert.length > 0) {
-        this.colorMen = '#FF0033';
+        this.colorMen = "#FF0033";
         this.alert = true;
-        console.log('FALTA LLENAR CAMPOS');
       } else {
-        console.log('Todo en orden para guardar la agenda.');
-        this.dialog = false;
-      }
+        console.log("Todo en orden para guardar la agenda.");
+        this.formulariogestion = 0;
+        this.dialog = false; //Mensaje de confirmación
 
-      console.log('TERMINO EL FORM PASO A PASO');
+        this.alert = true;
+        this.colorMen = "#008000";
+        console.log(this.sub_tipificacion);
+
+        if (this.id_tip == 1) {
+          this.mensajeAlert = "¡Cita Agendada con exito! Cliente: " + this.buscarValor;
+        } else if (this.id_tip == 2) {
+          this.mensajeAlert = "¡Cita Cancelada con exito! Cliente: " + this.buscarValor;
+        }
+      }
+      /* axios.post("actualizar-master", {
+            'idmaster': this.idmaster,
+            'num_doc_persona': this.num_doc_persona,
+            'nombre_persona': this.nombre_persona,
+            'apellido_persona': this.apellido_persona,
+            'correo_persona': this.correo_persona,
+            'ciudad_persona': this.ciudad_persona,
+            'tipo_doc_persona': this.tipo_doc_persona,
+            'telefono1_persona': this.telefono1_persona,
+            'telefono2_persona': this.telefono2_persona,
+            'fecha_agendamiento': this.fecha_agendamiento,
+            'direcc_residencia_persona': this.direcc_residencia_persona,
+            'barrio_persona': this.barrio_persona,
+            'fecha_agendamiento': this.fecha_agendamiento,
+            'hora_agendamiento': this.hora_agendamiento,
+            'tipificacion': this.tipificacion,
+            'sub_tipificacion': this.sub_tipificacion,
+            'observ_persona': this.observ_persona,
+          })
+          .then(function (response) {
+            if (response.status == 210) {
+              this.arrayMensaje.push(
+                "No hay información para guardar, si no desea continuar haga click sobre el botón Cancelar."
+              );
+                this.banMensaje = true;
+              this.colorMensaje = "error";
+            } else {
+              this.formulariogestion = 0;
+              this.mensajeAlert =
+                "Datos actualizados satisfactoriamente. Cliente: " +
+                this.buscarValor;
+              this.colorMen = "#008000";
+              this.alert = true;
+                this.buscarValor = "";
+            }
+          })
+          .catch(function (error) {});
+      } */
+
     },
     validarForm: function validarForm() {
       this.mensajeAlert = [];
 
-      if (this.tipo_doc_persona == '') {
+      if (this.tipo_doc_persona == "") {
         this.mensajeAlert.push("Debe seleccionar el tipo de documento.");
       }
 
-      if (this.nombre_persona == '') {
+      if (this.nombre_persona == "") {
         this.mensajeAlert.push("Digite el nombre.");
       }
 
-      if (this.apellido_persona == '') {
+      if (this.apellido_persona == "") {
         this.mensajeAlert.push("Digite el apellido.");
       }
 
-      if (this.hora_agendamiento == '') {
+      if (this.hora_agendamiento == "") {
         this.mensajeAlert.push("Seleccione hora de agendamiento.");
+      }
+
+      if (this.fecha_agendamiento == "") {
+        this.mensajeAlert.push("Seleccione fecha de agendamiento.");
       }
     },
     ////Limpiar los datos del cliente cuando se realiza una nueva busqueda
     limpiarDatos: function limpiarDatos() {
-      // let dbtm = this;
-      this.idmaster = 0;
       this.formulariogestion = 0;
-      this.arrayDataPersona = [];
+      this.infoPersona = 0, this.arrayDataPersona = [];
       this.arrayDataTipoId = [];
       this.arrayDataMunicipios = [];
       this.arrayGestion = [];
@@ -2534,15 +2574,28 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       this.alert = false;
       this.mensajeAlert = [];
-      this.typeAlert = '';
-      this.colorMen = ''; //Para el panel de expansión
+      this.typeAlert = "";
+      this.colorMen = ""; //Para el panel de expansión
 
       this.panel = [0, 1];
-      this.disabled = true; //gestión hor fecha agendamiento
+      this.disabled = true; //gestión hora y fecha agendamiento
 
-      this.fecha_agendamiento = '';
+      this.fecha_agendamiento = "";
       this.date = new Date().toISOString().substr(0, 10);
-      this.hora_agendamiento = '';
+      this.hora_agendamiento = ""; //Variables para el formaulario
+
+      this.idmaster = 0;
+      this.num_doc_persona = "";
+      this.nombre_persona = "";
+      this.apellido_persona = "";
+      this.correo_persona = "";
+      this.ciudad_persona = 0;
+      this.municipio = "";
+      this.tipo_doc_persona = 0, this.tip_doc = "";
+      this.telefono1_persona = "";
+      this.telefono2_persona = "";
+      this.direcc_residencia_persona = "";
+      this.barrio_persona = "";
     }
   },
   mounted: function mounted() {}
@@ -39644,7 +39697,7 @@ var render = function() {
       _c("v-card", { staticStyle: { width: "175px", height: "30px" } }, [
         _c(
           "a",
-          { staticClass: "form-group col-md-12 btn ", attrs: { href: "" } },
+          { staticClass: "form-group col-md-12 btn", attrs: { href: "" } },
           [_vm._v("Nueva Gestión")]
         )
       ]),
@@ -39654,7 +39707,7 @@ var render = function() {
       _c("v-card", { staticStyle: { width: "175px", height: "30px" } }, [
         _c(
           "a",
-          { staticClass: "form-group col-md-12 btn ", attrs: { href: "" } },
+          { staticClass: "form-group col-md-12 btn", attrs: { href: "" } },
           [_vm._v("Gestiones")]
         )
       ]),
@@ -39694,7 +39747,7 @@ var render = function() {
                           },
                           [
                             _vm._v(
-                              "\n            Gestionar Agendamientos\n            "
+                              "\n              Gestionar Agendamientos\n            "
                             )
                           ]
                         ),
@@ -39704,14 +39757,14 @@ var render = function() {
                             "div",
                             {
                               staticClass:
-                                " d-flex justify-space-around align-center mb-6 pt-3 mt-4 mr-15 ml-15 "
+                                "\n                  d-flex\n                  justify-space-around\n                  align-center\n                  mb-6\n                  pt-3\n                  mt-4\n                  mr-15\n                  ml-15\n                "
                             },
                             [
                               _c(
                                 "v-row",
                                 {
                                   staticClass:
-                                    " d-flex justify-space-around align-center mb-6 pt-3 mt-4 "
+                                    "\n                    d-flex\n                    justify-space-around\n                    align-center\n                    mb-6\n                    pt-3\n                    mt-4\n                  "
                                 },
                                 [
                                   _c(
@@ -39865,11 +39918,7 @@ var render = function() {
                                       _c(
                                         "v-icon",
                                         { attrs: { color: "white" } },
-                                        [
-                                          _vm._v(
-                                            "\n                        $expand\n                      "
-                                          )
-                                        ]
+                                        [_vm._v(" $expand ")]
                                       )
                                     ]
                                   },
@@ -39878,12 +39927,12 @@ var render = function() {
                               ],
                               null,
                               false,
-                              375885219
+                              2794704483
                             )
                           },
                           [
                             _vm._v(
-                              "\n                    Información detallada del Registro\n                   "
+                              "\n            Información detallada del Registro\n            "
                             )
                           ]
                         ),
@@ -39891,146 +39940,170 @@ var render = function() {
                         _c(
                           "v-expansion-panel-content",
                           [
-                            [
-                              _c("v-simple-table", {
-                                scopedSlots: _vm._u(
-                                  [
-                                    {
-                                      key: "default",
-                                      fn: function() {
-                                        return [
-                                          _c("thead", [
-                                            _c("tr", [
-                                              _c(
-                                                "th",
-                                                {
-                                                  staticClass:
-                                                    "text-left font-weight-black"
-                                                },
-                                                [_vm._v("Nombre")]
-                                              ),
-                                              _c("td", [
-                                                _vm._v(
-                                                  _vm._s(
-                                                    _vm.nombre_persona +
-                                                      " " +
-                                                      _vm.apellido_persona
-                                                  )
-                                                )
+                            _vm.infoPersona == 1
+                              ? [
+                                  _c("v-simple-table", {
+                                    scopedSlots: _vm._u(
+                                      [
+                                        {
+                                          key: "default",
+                                          fn: function() {
+                                            return [
+                                              _c("thead", [
+                                                _c("tr", [
+                                                  _c(
+                                                    "th",
+                                                    {
+                                                      staticClass:
+                                                        "text-left font-weight-black"
+                                                    },
+                                                    [_vm._v("Nombre")]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("td", [
+                                                    _vm._v(
+                                                      _vm._s(
+                                                        _vm.nombre_persona +
+                                                          " " +
+                                                          _vm.apellido_persona
+                                                      )
+                                                    )
+                                                  ])
+                                                ])
+                                              ]),
+                                              _vm._v(" "),
+                                              _c("thead", [
+                                                _c("tr", [
+                                                  _c(
+                                                    "th",
+                                                    {
+                                                      staticClass:
+                                                        "text-left font-weight-black"
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        "\n                        Tipo de Documento\n                      "
+                                                      )
+                                                    ]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("td", [
+                                                    _vm._v(_vm._s(_vm.tip_doc))
+                                                  ])
+                                                ])
+                                              ]),
+                                              _vm._v(" "),
+                                              _c("thead", [
+                                                _c("tr", [
+                                                  _c(
+                                                    "th",
+                                                    {
+                                                      staticClass:
+                                                        "text-left font-weight-black"
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        "\n                        No. Identificación\n                      "
+                                                      )
+                                                    ]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("td", [
+                                                    _vm._v(
+                                                      _vm._s(
+                                                        _vm.num_doc_persona
+                                                      )
+                                                    )
+                                                  ])
+                                                ])
+                                              ]),
+                                              _vm._v(" "),
+                                              _c("thead", [
+                                                _c("tr", [
+                                                  _c(
+                                                    "th",
+                                                    {
+                                                      staticClass:
+                                                        "text-left font-weight-black"
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        "\n                        Telefono del Cliente 1\n                      "
+                                                      )
+                                                    ]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("td", [
+                                                    _vm._v(
+                                                      _vm._s(
+                                                        _vm.telefono1_persona
+                                                      )
+                                                    )
+                                                  ])
+                                                ])
+                                              ]),
+                                              _vm._v(" "),
+                                              _c("thead", [
+                                                _c("tr", [
+                                                  _c(
+                                                    "th",
+                                                    {
+                                                      staticClass:
+                                                        "text-left font-weight-black"
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        "\n                        Telefono del Cliente 2\n                      "
+                                                      )
+                                                    ]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("td", [
+                                                    _vm._v(
+                                                      _vm._s(
+                                                        _vm.telefono2_persona
+                                                      )
+                                                    )
+                                                  ])
+                                                ])
+                                              ]),
+                                              _vm._v(" "),
+                                              _c("thead", [
+                                                _c("tr", [
+                                                  _c(
+                                                    "th",
+                                                    {
+                                                      staticClass:
+                                                        "text-left font-weight-black"
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        "\n                        Fecha Agendamiento\n                      "
+                                                      )
+                                                    ]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("td", [
+                                                    _vm._v(
+                                                      _vm._s(
+                                                        _vm.fecha_agendamiento
+                                                      )
+                                                    )
+                                                  ])
+                                                ])
                                               ])
-                                            ])
-                                          ]),
-                                          _vm._v(" "),
-                                          _c("thead", [
-                                            _c("tr", [
-                                              _c(
-                                                "th",
-                                                {
-                                                  staticClass:
-                                                    "text-left font-weight-black"
-                                                },
-                                                [_vm._v("Tipo de Documento")]
-                                              ),
-                                              _c("td", [
-                                                _vm._v(
-                                                  _vm._s(
-                                                    _vm.tipo_doc_persona.detalle
-                                                  )
-                                                )
-                                              ])
-                                            ])
-                                          ]),
-                                          _vm._v(" "),
-                                          _c("thead", [
-                                            _c("tr", [
-                                              _c(
-                                                "th",
-                                                {
-                                                  staticClass:
-                                                    "text-left font-weight-black"
-                                                },
-                                                [_vm._v("No. Identificación")]
-                                              ),
-                                              _c("td", [
-                                                _vm._v(
-                                                  _vm._s(_vm.num_doc_persona)
-                                                )
-                                              ])
-                                            ])
-                                          ]),
-                                          _vm._v(" "),
-                                          _c("thead", [
-                                            _c("tr", [
-                                              _c(
-                                                "th",
-                                                {
-                                                  staticClass:
-                                                    "text-left font-weight-black"
-                                                },
-                                                [
-                                                  _vm._v(
-                                                    "Telefono del Cliente 1"
-                                                  )
-                                                ]
-                                              ),
-                                              _c("td", [
-                                                _vm._v(
-                                                  _vm._s(_vm.telefono1_persona)
-                                                )
-                                              ])
-                                            ])
-                                          ]),
-                                          _vm._v(" "),
-                                          _c("thead", [
-                                            _c("tr", [
-                                              _c(
-                                                "th",
-                                                {
-                                                  staticClass:
-                                                    "text-left font-weight-black"
-                                                },
-                                                [
-                                                  _vm._v(
-                                                    "Telefono del Cliente 2"
-                                                  )
-                                                ]
-                                              ),
-                                              _c("td", [
-                                                _vm._v(
-                                                  _vm._s(_vm.telefono2_persona)
-                                                )
-                                              ])
-                                            ])
-                                          ]),
-                                          _vm._v(" "),
-                                          _c("thead", [
-                                            _c("tr", [
-                                              _c(
-                                                "th",
-                                                {
-                                                  staticClass:
-                                                    "text-left font-weight-black"
-                                                },
-                                                [_vm._v("Fecha Agendamiento")]
-                                              ),
-                                              _c("td", [
-                                                _vm._v(
-                                                  _vm._s(_vm.fecha_agendamiento)
-                                                )
-                                              ])
-                                            ])
-                                          ])
-                                        ]
-                                      },
-                                      proxy: true
-                                    }
-                                  ],
-                                  null,
-                                  false,
-                                  2587783801
-                                )
-                              })
-                            ]
+                                            ]
+                                          },
+                                          proxy: true
+                                        }
+                                      ],
+                                      null,
+                                      false,
+                                      3122775970
+                                    )
+                                  })
+                                ]
+                              : _vm._e()
                           ],
                           2
                         )
@@ -40055,11 +40128,7 @@ var render = function() {
                                       _c(
                                         "v-icon",
                                         { attrs: { color: "white" } },
-                                        [
-                                          _vm._v(
-                                            "\n                        $expand\n                      "
-                                          )
-                                        ]
+                                        [_vm._v(" $expand ")]
                                       )
                                     ]
                                   },
@@ -40068,12 +40137,12 @@ var render = function() {
                               ],
                               null,
                               false,
-                              375885219
+                              2794704483
                             )
                           },
                           [
                             _vm._v(
-                              "\n                    Gestionar Registro \n                    "
+                              "\n            Gestionar Registro\n            "
                             )
                           ]
                         ),
@@ -40093,7 +40162,7 @@ var render = function() {
                                 },
                                 on: {
                                   change: function($event) {
-                                    return _vm.listaSubtipificacion()
+                                    ;(_vm.dialog = true), (_vm.alert = false)
                                   }
                                 },
                                 model: {
@@ -40105,25 +40174,6 @@ var render = function() {
                                 }
                               })
                             ],
-                            _vm._v(" "),
-                            _vm.sub_tipificacion.length > 0
-                              ? [
-                                  _c("v-select", {
-                                    attrs: {
-                                      items: _vm.sub_tipificacion,
-                                      "item-text": "detalle",
-                                      "item-value": "idsub_tipificacion",
-                                      label: "Subtipificación",
-                                      outlined: ""
-                                    },
-                                    on: {
-                                      change: function($event) {
-                                        _vm.dialog = true
-                                      }
-                                    }
-                                  })
-                                ]
-                              : _vm._e(),
                             _vm._v(" "),
                             [
                               _c(
@@ -40188,7 +40238,7 @@ var render = function() {
                                                           },
                                                           [
                                                             _vm._v(
-                                                              "INFORMACIÓN A RECOPILAR"
+                                                              "\n                              INFORMACIÓN A RECOPILAR\n                            "
                                                             )
                                                           ]
                                                         )
@@ -40204,7 +40254,7 @@ var render = function() {
                                                       [
                                                         _c("p", [
                                                           _vm._v(
-                                                            "\n                                  Tenga en cuenta diligenciar o completar todos los campos quen tengan el icono de "
+                                                            "\n                              Tenga en cuenta diligenciar o completar todos\n                              los campos quen tengan el icono de\n                              "
                                                           ),
                                                           _c(
                                                             "span",
@@ -40215,7 +40265,7 @@ var render = function() {
                                                             [_vm._v("(*)")]
                                                           ),
                                                           _vm._v(
-                                                            "  obligatorio, de lo contrario no se podra almacenar la información.\n                                "
+                                                            " obligatorio,\n                              de lo contrario no se podra almacenar la\n                              información.\n                            "
                                                           )
                                                         ])
                                                       ]
@@ -40247,11 +40297,11 @@ var render = function() {
                                                           },
                                                           [
                                                             _vm._v(
-                                                              "\n                                  " +
+                                                              "\n                            " +
                                                                 _vm._s(
                                                                   mensaje
                                                                 ) +
-                                                                "\n                                  "
+                                                                "\n                            "
                                                             ),
                                                             _c(
                                                               "v-btn",
@@ -40271,7 +40321,7 @@ var render = function() {
                                                               },
                                                               [
                                                                 _vm._v(
-                                                                  " Cerrar "
+                                                                  "\n                              Cerrar\n                            "
                                                                 )
                                                               ]
                                                             )
@@ -40285,14 +40335,13 @@ var render = function() {
                                                       "form-wizard",
                                                       {
                                                         attrs: {
+                                                          "start-index": 2,
                                                           "next-button-text":
                                                             "Siguiente",
                                                           "back-button-text":
                                                             "Anterior",
                                                           "finish-button-text":
                                                             "Guardar y Procesar",
-                                                          "starr-index":
-                                                            "step1",
                                                           color: "#0000FF",
                                                           shape: "circle",
                                                           title: "",
@@ -40309,8 +40358,7 @@ var render = function() {
                                                           {
                                                             attrs: {
                                                               title:
-                                                                "Información Personal",
-                                                              step: "step1"
+                                                                "Información Personal"
                                                             }
                                                           },
                                                           [
@@ -40342,7 +40390,11 @@ var render = function() {
                                                                           callback: function(
                                                                             $$v
                                                                           ) {
-                                                                            _vm.nombre_persona = $$v
+                                                                            _vm.nombre_persona =
+                                                                              typeof $$v ===
+                                                                              "string"
+                                                                                ? $$v.trim()
+                                                                                : $$v
                                                                           },
                                                                           expression:
                                                                             "nombre_persona"
@@ -40423,20 +40475,16 @@ var render = function() {
                                                                           },
                                                                           model: {
                                                                             value:
-                                                                              _vm
-                                                                                .tipo_doc_persona
-                                                                                .idtipo_identificacion,
+                                                                              _vm.tipo_doc_persona,
                                                                             callback: function(
                                                                               $$v
                                                                             ) {
-                                                                              _vm.$set(
-                                                                                _vm.tipo_doc_persona,
-                                                                                "idtipo_identificacion",
+                                                                              _vm.tipo_doc_persona = _vm._n(
                                                                                 $$v
                                                                               )
                                                                             },
                                                                             expression:
-                                                                              "tipo_doc_persona.idtipo_identificacion"
+                                                                              "tipo_doc_persona"
                                                                           }
                                                                         }
                                                                       )
@@ -40588,6 +40636,8 @@ var render = function() {
                                                                               "nombre_municipio",
                                                                             "item-value":
                                                                               "id",
+                                                                            "return-object":
+                                                                              "",
                                                                             label:
                                                                               "Municipio",
                                                                             outlined:
@@ -40595,20 +40645,16 @@ var render = function() {
                                                                           },
                                                                           model: {
                                                                             value:
-                                                                              _vm
-                                                                                .ciudad_persona
-                                                                                .id,
+                                                                              _vm.ciudad_persona,
                                                                             callback: function(
                                                                               $$v
                                                                             ) {
-                                                                              _vm.$set(
-                                                                                _vm.ciudad_persona,
-                                                                                "id",
+                                                                              _vm.ciudad_persona = _vm._n(
                                                                                 $$v
                                                                               )
                                                                             },
                                                                             expression:
-                                                                              "ciudad_persona.id"
+                                                                              "ciudad_persona"
                                                                           }
                                                                         }
                                                                       )
@@ -40743,8 +40789,7 @@ var render = function() {
                                                             staticClass: "p-4",
                                                             attrs: {
                                                               title:
-                                                                "Agendamiento",
-                                                              step: "step2"
+                                                                "Agendamiento"
                                                             }
                                                           },
                                                           [

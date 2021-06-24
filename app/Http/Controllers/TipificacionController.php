@@ -13,7 +13,6 @@ class TipificacionController extends Controller
     {
  
         $lista_items=Tipificacion::where('estado',$request->estado)
-        
         ->orderBy('idtipificacion','asc')
         ->get();
         if((count($lista_items))==0){
@@ -22,18 +21,6 @@ class TipificacionController extends Controller
         
         return $lista_items;
     }
-    public function listarSubtipificacion(Request $request)
-    {
- 
-        $lista_items=Sub_tipificacion::where('idtipificacion',$request->id)
-        
-        ->orderBy('idsub_tipificacion','asc')
-        ->get();
-        if((count($lista_items))==0){
-            return response()->json(['errors'=>['mensaje'=>'No se encuentran Subtipificaciones.']], 210); 
-        }
-        
-        return $lista_items;
-    }
+    
 
 }
