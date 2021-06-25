@@ -29,7 +29,9 @@
                         <div class="card">
                             <v-app>
                                 <buscarpersonas-component></buscarpersonas-component>
+                                
                             </v-app>
+
                         </div>
                     </div>
                 </div>       
