@@ -2602,68 +2602,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      dates: ['2019-09-10', '2019-09-20'],
-      mensaje: '',
-      json_fields: {
-        'Complete name': 'name',
-        'City': 'city',
-        'Telephone': 'phone.mobile',
-        'Telephone 2': {
-          field: 'phone.landline',
-          callback: function callback(value) {
-            return "Landline Phone - ".concat(value);
-          }
-        }
-      },
-      json_data: [{
-        'name': 'Tony Peña',
-        'city': 'New York',
-        'country': 'United States',
-        'birthdate': '1978-03-15',
-        'phone': {
-          'mobile': '1-541-754-3010',
-          'landline': '(541) 754-3010'
-        }
-      }, {
-        'name': 'Thessaloniki',
-        'city': 'Athens',
-        'country': 'Greece',
-        'birthdate': '1987-11-23',
-        'phone': {
-          'mobile': '+1 855 275 5071',
-          'landline': '(2741) 2621-244'
-        }
-      }],
-      json_meta: [[{
-        'key': 'charset',
-        'value': 'utf-8'
-      }]]
+      fechaInicial: ['2021-01-01'],
+      fechaFinal: ['2021-01-01'],
+      exporRep: false
     };
   },
   methods: {
-    descargar: function descargar() {
-      console.log(this.dates);
+    descargargestion: function descargargestion() {
+      console.log(this.fechaInicial, this.fechaFinal);
       axios.post('reportExcel', {
-        'valor': this.dates
+        'valor': this.fechaInicial.fechaFinal
       }).then(function (response) {
         console.log('Tenemos una respuesta desde el controlador');
       });
-    }
-  },
-  computed: {
-    dateRangeText: function dateRangeText() {
-      return this.dates.join(' ~ ');
     }
   }
 });
@@ -40951,78 +40905,79 @@ var render = function() {
     "v-row",
     [
       _c(
-        "v-col",
-        { attrs: { cols: "12", sm: "6" } },
-        [
-          _c("v-date-picker", {
-            attrs: { range: "" },
-            model: {
-              value: _vm.dates,
-              callback: function($$v) {
-                _vm.dates = $$v
-              },
-              expression: "dates"
+        "v-form",
+        {
+          on: {
+            submit: function($event) {
+              $event.preventDefault()
+              return _vm.exportarExcel.apply(null, arguments)
             }
-          })
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "v-col",
-        { attrs: { cols: "12", sm: "6" } },
+          }
+        },
         [
-          _c("v-text-field", {
-            attrs: {
-              label: "Date range",
-              "prepend-icon": "mdi-calendar",
-              readonly: ""
-            },
-            model: {
-              value: _vm.dateRangeText,
-              callback: function($$v) {
-                _vm.dateRangeText = $$v
-              },
-              expression: "dateRangeText"
-            }
-          }),
-          _vm._v("\n      model: " + _vm._s(_vm.dates) + "\n\n      "),
           _c(
-            "export-excel",
-            {
-              staticClass: "btn btn-default",
-              attrs: {
-                data: _vm.json_data,
-                fields: _vm.json_fields,
-                worksheet: "My Worksheet",
-                name: "PPPPPPP.xls"
-              }
-            },
+            "v-col",
+            { attrs: { cols: "12", sm: "6" } },
             [
-              _vm._v(
-                "\n \n    Download Excel (you can customize this with html code!)\n \n"
-              )
-            ]
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "v-col",
-        [
-          _c(
-            "v-btn",
-            {
-              staticClass: "white--text align-center",
-              attrs: { color: "indigo", elevation: "8", large: "" },
-              on: {
-                click: function($event) {
-                  return _vm.descargar()
+              _c("v-date-picker", {
+                attrs: { locale: "ES", range: "" },
+                model: {
+                  value: _vm.fechaInicial,
+                  callback: function($$v) {
+                    _vm.fechaInicial = $$v
+                  },
+                  expression: "fechaInicial"
                 }
-              }
-            },
-            [_vm._v("Descargar")]
+              }),
+              _vm._v(" "),
+              _c("v-date-picker", {
+                attrs: { locale: "ES", range: "" },
+                model: {
+                  value: _vm.fechaFinal,
+                  callback: function($$v) {
+                    _vm.fechaFinal = $$v
+                  },
+                  expression: "fechaFinal"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-col",
+            { attrs: { cols: "12", sm: "6" } },
+            [
+              _c("v-text-field", {
+                attrs: {
+                  label: "Reporte Gestión",
+                  "prepend-icon": "mdi-calendar",
+                  readonly: ""
+                }
+              }),
+              _vm._v(" "),
+              _c(
+                "v-btn",
+                {
+                  staticClass: "my-2",
+                  staticStyle: { color: "#fff" },
+                  attrs: {
+                    type: "submit",
+                    color: "#1A237E",
+                    dark: "",
+                    loading: _vm.exporRep
+                  }
+                },
+                [
+                  _c("v-icon", { attrs: { color: "#fff", dark: "" } }, [
+                    _vm._v("mdi-cloud-download")
+                  ]),
+                  _vm._v("Descargar\n    ")
+                ],
+                1
+              )
+            ],
+            1
           )
         ],
         1

@@ -45,12 +45,11 @@ class MasterController extends Controller
      */
     public function exportExcel(Request $request)
     {
-        
-        // $filtro1 = $request->valor[0];
-        // $filtro2 = $request->valor[1];
-        // return (new ReportesExport($filtro1, $filtro2))->download('reportExcel.xlsx');
-        // $msne = "Hola desde el controlador.";
-        // return response()->json($msne);
-        return Excel::download(new ReportesExport, 'Master.xlsx');
+
+        $idmaster  = $request->idmaster;
+        $gestiones  = $request->gestiones;
+
+
+        return Excel::download(new ReportesExport($idmaster, $gestiones), 'Reportes_Gestión.xlsx');
     }
 }
