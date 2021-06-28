@@ -16,6 +16,7 @@
         v-model="fechaFinal"
         locale="ES" 
         range
+        @change="getItems"
         
       ></v-date-picker>
     </v-col>
@@ -29,13 +30,20 @@
         prepend-icon="mdi-calendar"
         readonly
       ></v-text-field>
-      <v-btn type="submit" class="my-2" color="#1A237E" dark style="color: #fff" :loading="exporRep">
-         <v-icon color="#fff" dark>mdi-cloud-download</v-icon>Descargar
-      </v-btn>
+      model: {{ dates }}
+
+      <export-excel
+    class   = "btn btn-default"
+    :data   = "json_data"
+    :fields = "json_fields"
+    worksheet = "My Worksheet"
+    name    = "master.xls">
+ 
+    Download Excel (you can customize this with html code!)
+ 
+</export-excel>
     </v-col>
-
-    </v-form>
-
+    
   </v-row>
 </template>
 
@@ -44,20 +52,35 @@
 <script>
   export default {
     data: () => ({
-      fechaInicial: ['2021-01-01'],
-      fechaFinal: ['2021-01-01'],
-
-      exporRep: false,
-
+      dates: [],
+      mensaje: '',
+      json_fields: {
+            'Nombre': 'full_name',
+            'documento': 'documento',
+            'Tipificación': 'tip',
+            'Telefono 1' : 'telefono'
+            },
+        
+        json_data: [ ],
+        json_meta: [
+            [
+                {
+                    'key': 'charset',
+                    'value': 'utf-8'
+                }
+            ]
+        ],
+    
     }),
+    
     methods: {
-      descargargestion(){
-        console.log(this.fechaInicial, this.fechaFinal)
+     getItems() {
+        console.log(this.dates)
         axios.post('reportExcel',{
           'valor': this.fechaInicial.fechaFinal,
         }).then(response=>{
-          
-          console.log('Tenemos una respuesta desde el controlador')
+          this.json_data = response.data;
+          console.log(this.json_data)
         })
       },
 

@@ -22,20 +22,32 @@
                     </a> --}}
                     <img class="navbar-brand" src="img/logo-famisanar.png" alt="famisanar" width="300" height="90">
                 </div>
+                
             </nav>
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col">
                         <div class="card">
-                            <v-app>
-                                <nuevagestion-component></nuevagestion-component>
-                            </v-app>
 
+    {{-- para pruebas locales --}}
+    {{-- @yield('asesor') --}}
+    {{-- @yield('administrador') --}}
+    
+    <v-app>
+      @if($idRol==0)
+      @yield('administrador')
+      @endif
+
+      @if($idRol==1)
+        @yield('asesor')
+      @endif
+    </v-app>
+    
                         </div>
                     </div>
                 </div>       
-            </div>
+              </div>
         </div>
-        <script src="{{ mix('js/app.js') }}"></script>
+      <script src="{{ mix('js/app.js') }}"></script>
     </body>
 </html>

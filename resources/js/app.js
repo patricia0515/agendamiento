@@ -13,36 +13,27 @@ import Vuetify from "vuetify";
 Vue.use(Vuetify);
 
 import Vue from "vue";
-import excel from "vue-excel-export";
 
+import excel from "vue-excel-export";
 Vue.use(excel);
+
 
 //Para dividir el flujo de los formularios
 import VueFormWizard from "vue-form-wizard";
 import "vue-form-wizard/dist/vue-form-wizard.min.css";
 Vue.use(VueFormWizard);
 
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
-
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
-// Vue.component(
-//     "example-component",
-//     require("./components/ExampleComponent.vue").default
-// );
 //Asesor
 Vue.component(
-    "buscarpersonas-component",
-    require("./components/asesor/BuscarPersonaComponent.vue").default
+    "nuevagestion-component",
+    require("./components/asesor/NuevaGestionComponent.vue").default
+);
+Vue.component(
+    "gestiones-component",
+    require("./components/asesor/GestionesComponent.vue").default
 );
 
+//Administrador
 Vue.component(
     "reportesgestion-component",
     require("./components/reportes/ReportesGestionComponent.vue").default
@@ -58,5 +49,9 @@ const app = new Vue({
     el: "#app",
 
     //Instancio Vuetify como parametro de Vue
-    vuetify: new Vuetify()
+    vuetify: new Vuetify({
+        icons: {
+            iconfont: "mdi"
+        }
+    })
 });
