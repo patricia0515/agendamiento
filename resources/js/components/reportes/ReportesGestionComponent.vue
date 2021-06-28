@@ -7,6 +7,7 @@
       <v-date-picker
         v-model="dates"
         range
+        @change="getItems"
         
       ></v-date-picker>
     </v-col>
@@ -27,21 +28,11 @@
     :data   = "json_data"
     :fields = "json_fields"
     worksheet = "My Worksheet"
-    name    = "PPPPPPP.xls">
+    name    = "master.xls">
  
     Download Excel (you can customize this with html code!)
  
 </export-excel>
-    </v-col>
-    <v-col>
-      <v-btn
-      class="white--text align-center"
-      color="indigo"
-      elevation="8"
-      large
-      @click="descargar()"
-    >Descargar</v-btn>
-    <!-- fin boton -->
     </v-col>
     
   </v-row>
@@ -52,41 +43,16 @@
 <script>
   export default {
     data: () => ({
-      dates: ['2019-09-10', '2019-09-20'],
+      dates: [],
       mensaje: '',
       json_fields: {
-            'Complete name': 'name',
-            'City': 'city',
-            'Telephone': 'phone.mobile',
-            'Telephone 2' : {
-                field: 'phone.landline',
-                callback: (value) => {
-                    return `Landline Phone - ${value}`;
-                }
+            'Nombre': 'full_name',
+            'documento': 'documento',
+            'Tipificación': 'tip',
+            'Telefono 1' : 'telefono'
             },
-        },
-        json_data: [
-            {
-                'name': 'Tony Peña',
-                'city': 'New York',
-                'country': 'United States',
-                'birthdate': '1978-03-15',
-                'phone': {
-                    'mobile': '1-541-754-3010',
-                    'landline': '(541) 754-3010'
-                }
-            },
-            {
-                'name': 'Thessaloniki',
-                'city': 'Athens',
-                'country': 'Greece',
-                'birthdate': '1987-11-23',
-                'phone': {
-                    'mobile': '+1 855 275 5071',
-                    'landline': '(2741) 2621-244'
-                }
-            }
-        ],
+        
+        json_data: [ ],
         json_meta: [
             [
                 {
@@ -97,14 +63,15 @@
         ],
     
     }),
+    
     methods: {
-      descargar(){
+     getItems() {
         console.log(this.dates)
         axios.post('reportExcel',{
           'valor': this.dates,
         }).then(response=>{
-          
-          console.log('Tenemos una respuesta desde el controlador')
+          this.json_data = response.data;
+          console.log(this.json_data)
         })
       }
     },

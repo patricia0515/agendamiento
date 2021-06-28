@@ -13,23 +13,24 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+/* Route::get('/', function () {
     return view('welcome');
-});
+}); */
 
-/**Validación del usuario en la base de datos crm_masterclaro */
+//**Validación del usuario en la base de datos crm_masterclaro */
 /* Route::get('/', 'AppMasterController@appmaster');
  */
-/* Route::get('/', function () {
+Route::get('/', function () {
     $idRol = 1;
     return view('usuarios/asesor', compact('idRol'));
-}); */
+});
 
 ////Rutas para Usuario Asesor
 Route::post('consultaPersona', 'MasterController@consulta');
 Route::post('listar-tipificaciones', 'TipificacionController@listar');
 Route::post('listar-subtipificaciones', 'TipificacionController@listarSubtipificacion');
 Route::post('actualizar-master', 'MasterController@actualizar');
+Route::get('gestiones', 'MasterController@gestiones');
 
 // Ruta para reportes y administrador
 Route::get('/reportes', function (){

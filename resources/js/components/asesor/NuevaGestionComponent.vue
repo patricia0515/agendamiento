@@ -1,15 +1,44 @@
 <template>
   <v-container>
-    <v-card style="width: 175px; height: 30px">
-      <a class="form-group col-md-12 btn" href="">Nueva Gestión</a>
-    </v-card>
-    <br />
-    <v-card style="width: 175px; height: 30px">
-      <a class="form-group col-md-12 btn" href="">Gestiones</a>
-    </v-card>
+      <v-bottom-navigation
+        :value="value"
+        color="indigo"
+        grow
+        
+      >
+        <v-btn>
+          <span>Gestiones</span>
+
+          <v-icon>mdi-history</v-icon>
+        </v-btn>
+
+        <v-btn>
+          <span>Nueva Gestión</span>
+
+          <v-icon>mdi-heart</v-icon>
+        </v-btn>
+      </v-bottom-navigation>
+
+      <div class="pa-6">
+
+        <h3>Gestiones a la semana: {{ gestion_semana }}</h3>
+            <div class="progress">
+                <div 
+                class="progress-bar " 
+                role="progressbar" 
+                
+                :style="{'width': gestion_semana+'%'}"
+                aria-valuenow="20" 
+                aria-valuemin="0" 
+                aria-valuemax="80"
+                :class="color"
+                >{{ gestion_semana }}%</div>
+              </div>
+      </div>        
+   
     <v-flex>
       <!-- Formulario consulta de persona -->
-      <template>
+      <template v-if="nuevaGestion==true">
         <div>
           <v-expansion-panels
             v-model="panel1"
@@ -69,8 +98,7 @@
                       elevation="8"
                       large
                       @click="buscarCliente()"
-                      >Buscar</v-btn
-                    >
+                      >Buscar</v-btn>
                     <!-- fin boton -->
                   </v-row>
                 </div>
@@ -101,6 +129,7 @@
 
       <!--Fin Formulario consulta de persona -->
     </v-flex>
+    
 
     <!-- Información de la persona -->
     <template v-if="formulariogestion == 1">
@@ -189,13 +218,13 @@
               <!-- Select Tipificación -->
               <template>
                 <v-select
-                  v-model="id_tip"
+                  v-model.number="id_tip"
                   :items="tipificacion"
                   item-text="detalle"
                   item-value="idtipificacion"
                   label="Tipificación"
                   outlined
-                  @change="(dialog = true), (alert = false)"
+                  @change="validFecha"
                 ></v-select>
               </template>
               <!-- Fin Select Tipificación-->
@@ -265,182 +294,203 @@
                                 :before-change="() => validateAsync('form')"
                                 
                               >
-                              <v-form
-                                ref="form"
-                                v-model="valid"
-                                lazy-validation
-                              >
-                                <v-row>
-                                  <v-col cols="12" sm="6">
-                                    <v-text-field
-                                      v-model.trim= "nombre_persona"
-                                      label="Nombre"
-                                      outlined
-                                      :counter="20"
-                                      :rules= "nombre_personaRules"
-                                    ></v-text-field>
-                                  </v-col>
-
-                                  <v-col cols="12" sm="6">
-                                    <v-text-field
-                                      v-model.trim="apellido_persona"
-                                      label="Apellido"
-                                      outlined
-                                      :counter="20"
-                                      :rules= "apellido_personaRules"
-                                    ></v-text-field>
-                                  </v-col>
-                                </v-row>
-
-                                <v-row>
-                                  <v-col cols="12" sm="6">
-                                    <!-- Select Tipo de Documento -->
-                                    <template>
-                                      <v-select
-                                        v-model.number="tipo_doc_persona"
-                                        :items="arrayDataTipoId"
-                                        item-text="detalle"
-                                        item-value="idtipo_identificacion"
-                                        label="Tipo de Documento"
+                                <v-form
+                                  ref="form"
+                                  v-model="valid"
+                                  lazy-validation
+                                >
+                                  <v-row>
+                                    <v-col cols="12" sm="6">
+                                      <v-text-field
+                                        v-model.trim= "nombre_persona"
+                                        label="Nombre"
                                         outlined
-                                        :rules="tipo_doc_personaRules"
-                                      ></v-select>
-                                    </template>
-                                    <!-- Fin Select Tipo de Documento-->
-                                  </v-col>
+                                        :counter="20"
+                                        :rules= "nombre_personaRules"
+                                      ></v-text-field>
+                                    </v-col>
 
-                                  <v-col cols="12" sm="6">
-                                    <v-text-field
-                                      v-model.trim="num_doc_persona"
-                                      label="Número de Documento (*)"
-                                      outlined
-                                      readonly
-                                    ></v-text-field>
-                                  </v-col>
-                                </v-row>
-
-                                <v-row>
-                                  <v-col cols="12" sm="6">
-                                    <v-text-field
-                                      v-model="direcc_residencia_persona"
-                                      label="Dirección Residencia (*)"
-                                      outlined
-                                      :counter="50"
-                                      :rules="direcc_residencia_personaRules"
-                                    ></v-text-field>
-                                  </v-col>
-
-                                  <v-col cols="12" sm="6">
-                                    <v-text-field
-                                      v-model.trim="barrio_persona"
-                                      label="Barrio (*)"
-                                      outlined
-                                      :counter="30"
-                                      :rules="barrio_personaRules"
-                                    ></v-text-field>
-                                  </v-col>
-                                </v-row>
-
-                                <v-row>
-                                  <v-col cols="12" sm="6">
-                                    <!-- Select Municipio -->
-                                    <template>
-                                      <v-autocomplete
-                                        v-model.number="ciudad_persona"
-                                        :items="arrayDataMunicipios"
-                                        item-text="nombre_municipio"
-                                        item-value="id"
-                                        return-object
-                                        label="Municipio"
+                                    <v-col cols="12" sm="6">
+                                      <v-text-field
+                                        v-model.trim="apellido_persona"
+                                        label="Apellido"
                                         outlined
-                                        :rules="ciudad_personaRules"
-                                      ></v-autocomplete>
-                                    </template>
-                                    <!-- Fin Select Municipio-->
-                                  </v-col>
+                                        :counter="20"
+                                        :rules= "apellido_personaRules"
+                                      ></v-text-field>
+                                    </v-col>
+                                  </v-row>
 
-                                  <v-col cols="12" sm="6">
-                                    <v-text-field
-                                      v-model.trim="telefono1_persona"
-                                      label="Teléfono 1 (*)"
-                                      outlined
-                                      :counter="10"
-                                      :rules="telefono1_personaRules"
-                                    ></v-text-field>
-                                  </v-col>
-                                </v-row>
+                                  <v-row>
+                                    <v-col cols="12" sm="6">
+                                      <!-- Select Tipo de Documento -->
+                                      <template>
+                                        <v-select
+                                          v-model.number="tipo_doc_persona"
+                                          :items="arrayDataTipoId"
+                                          item-text="detalle"
+                                          item-value="idtipo_identificacion"
+                                          label="Tipo de Documento"
+                                          outlined
+                                          :rules="tipo_doc_personaRules"
+                                        ></v-select>
+                                      </template>
+                                      <!-- Fin Select Tipo de Documento-->
+                                    </v-col>
 
-                                <v-row>
-                                  <v-col cols="12" sm="6">
-                                    <v-text-field
-                                      v-model.trim="telefono2_persona"
-                                      label="Teléfono 2 (*)"
-                                      outlined
-                                      :counter="10"
-                                      :rules="telefono2_personaRules"
-                                    ></v-text-field>
-                                  </v-col>
+                                    <v-col cols="12" sm="6">
+                                      <v-text-field
+                                        v-model.trim="num_doc_persona"
+                                        label="Número de Documento (*)"
+                                        outlined
+                                        readonly
+                                      ></v-text-field>
+                                    </v-col>
+                                  </v-row>
 
-                                  <v-col cols="12" sm="6">
-                                    <v-text-field
-                                      v-model.trim="correo_persona"
-                                      label="Correo Eléctronico"
-                                      outlined
-                                      :rules="correo_personaRules"
-                                    ></v-text-field>
-                                  </v-col>
-                                </v-row>
-                              </v-form>
-                                
+                                  <v-row>
+                                    <v-col cols="12" sm="6">
+                                      <v-text-field
+                                        v-model="direcc_residencia_persona"
+                                        label="Dirección Residencia (*)"
+                                        outlined
+                                        :counter="50"
+                                        :rules="direcc_residencia_personaRules"
+                                      ></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="6">
+                                      <v-text-field
+                                        v-model.trim="barrio_persona"
+                                        label="Barrio (*)"
+                                        outlined
+                                        :counter="30"
+                                        :rules="barrio_personaRules"
+                                      ></v-text-field>
+                                    </v-col>
+                                  </v-row>
+
+                                  <v-row>
+                                    <v-col cols="12" sm="6">
+                                      <!-- Select Municipio -->
+                                      <template>
+                                        <v-autocomplete
+                                          v-model.number="ciudad_persona"
+                                          :items="arrayDataMunicipios"
+                                          item-text="nombre_municipio"
+                                          item-value="id"
+                                          label="Municipio"
+                                          outlined
+                                          :rules="ciudad_personaRules"
+                                        ></v-autocomplete>
+                                      </template>
+                                      <!-- Fin Select Municipio-->
+                                    </v-col>
+
+                                    <v-col cols="12" sm="6">
+                                      <v-text-field
+                                        v-model.trim="telefono1_persona"
+                                        label="Teléfono 1 (*)"
+                                        outlined
+                                        :counter="10"
+                                        :rules="telefono1_personaRules"
+                                      ></v-text-field>
+                                    </v-col>
+                                  </v-row>
+
+                                  <v-row>
+                                    <v-col cols="12" sm="6">
+                                      <v-text-field
+                                        v-model.trim="telefono2_persona"
+                                        label="Teléfono 2 (*)"
+                                        outlined
+                                        :counter="10"
+                                        :rules="telefono2_personaRules"
+                                      ></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="6">
+                                      <v-text-field
+                                        v-model.trim="correo_persona"
+                                        label="Correo Eléctronico"
+                                        outlined
+                                        :rules="correo_personaRules"
+                                      ></v-text-field>
+                                    </v-col>
+                                  </v-row>
+                                </v-form>
                               </tab-content>
+                              <template v-if="id_tip == 1">
+                                <tab-content
+                                  title="Agendamiento"
+                                  class="p-4"
+                                  :before-change="() => validateAsync('form2')"
+                                >
+                                  
+                                  <v-form
+                                    ref="form2"
+                                    v-model="valid2"
+                                    lazy-validation
+                                  >
+                                    <v-row class="justify-center">
+                                      <v-card>
+                                        
+                                        <v-date-picker
+                                          v-model="fecha_agendamiento1"
+                                          label="Fecha Agendamiento (*)"
+                                          placeholder="AAAA-MM-DD"
+                                          color="indigo"
+                                          width="180"
+                                          elevation="15"
+                                          locale="es-co"
+                                          :min="minimo"
+                                          :landscape="true"
+                                          :rules="fecha_agendamientoRules"
+                                          @change="fecha_agendamiento = fecha_agendamiento1"
+                                        ></v-date-picker>
+                                      </v-card>
 
-                              <tab-content
-                                title="Agendamiento"
-                                class="p-4"
-                                :before-change="() => validateAsync('form2')"
-                              >
-                              <v-form
-                                ref="form2"
-                                v-model="valid2"
-                                lazy-validation
-                              >
-                                <v-row class="justify-center">
-                                  <v-card>
-                                    
-                                    <v-date-picker
-                                      v-model="fecha_agendamiento1"
-                                      label="Fecha Agendamiento (*)"
-                                      placeholder="AAAA-MM-DD"
-                                      color="indigo"
-                                      width="180"
-                                      elevation="15"
-                                      locale="es-co"
-                                      :min="minimo"
-                                      :landscape="true"
-                                      :rules="fecha_agendamientoRules"
-                                      @change="fecha_agendamiento = fecha_agendamiento1"
-                                    ></v-date-picker>
-                                  </v-card>
-
-                                  <v-col cols="12" sm="6" class="pa-3">
-                                    <v-select
-                                      v-model="hora_agendamiento"
-                                      :items="items_hora"
-                                      full-width
-                                      label="Hora Agendamiento (*)"
-                                      outlined
-                                      :rules="hora_agendamientoRules"
-                                    ></v-select>
-                                    <v-textarea
-                                      solo
-                                      name="input-7-4"
-                                      label="Comentario"
-                                    ></v-textarea>
-                                  </v-col>
-                                </v-row>
-                              </v-form>
+                                      <v-col cols="12" sm="6" class="pa-3">
+                                        <v-select
+                                          v-model="hora_agendamiento"
+                                          :items="items_hora"
+                                          full-width
+                                          label="Hora Agendamiento (*)"
+                                          outlined
+                                          :rules="hora_agendamientoRules"
+                                        ></v-select>
+                                        <v-textarea
+                                          v-model="observ_persona"
+                                          solo
+                                          name="input-7-4"
+                                          label="Comentario"
+                                        ></v-textarea>
+                                      </v-col>
+                                    </v-row>
+                                  </v-form>
                                 
-                              </tab-content>
+                                </tab-content>
+                              </template>
+                              <template v-if="id_tip == 2">
+                                <tab-content
+                                  title="Cancelar Cita"
+                                  class="p-4"
+                                >
+                                <div
+                                class="ma-3 text-center justify-center">
+                                  <h4 class="justify-center"> Esta seguro que desea cancelar la cita asignada para la fecha:</h4><span><h1>{{fecha_agendamiento}}</h1></span><br>
+                                  <h4 class="justify-center"> Hora: </h4><span><h2>{{ hora_agendamiento1 }}</h2></span><br>
+                                  <v-textarea
+                                          v-model="observ_persona"
+                                          solo
+                                          name="input-7-4"
+                                          label="Comentario"
+                                        ></v-textarea>
+                                </div>
+                                
+
+                                </tab-content>
+                              </template> 
                               
                               <tab-content
                               title ="Verificación"
@@ -477,6 +527,11 @@
 <script>
 export default {
   data: () => ({
+    gestiones:false,
+    nuevaGestion:true,
+    gestion_dia:0,
+    gestion_semana:0,
+
     nombreAsesor: "",
     formulariogestion: 0,
     infoPersona: 0,
@@ -484,7 +539,7 @@ export default {
     arrayDataPersona: [],
     arrayDataTipoId: [],
     arrayDataMunicipios: [],
-    arrayGestion: [],
+    arrayGestiones: [],
 
     //Variables para el formaulario
     idmaster: 0,
@@ -505,6 +560,7 @@ export default {
     fecha_agendamiento: "",
     fecha_agendamiento1:null,
     hora_agendamiento: "",
+    hora_agendamiento1: "",
     items_hora: [
       "08:00-10:00",
       "09:00-11:00",
@@ -541,8 +597,9 @@ export default {
     //Vamos a validar el formulario agendar 
     valid: true,
     valid2: true,
-
+    
     mens:"",
+
     nombre_personaRules: [
         v => !!v || 'Nombre requerido',
         v => (v && v.length <= 20) || 'El nombre no debe exceder mas de 20 caracteres',
@@ -584,7 +641,25 @@ export default {
     ],
 
   }),
+  created () {
+        this.getCount();
+        this.color();
+    },
+  
   methods: {
+    getCount() {
+        axios.get("gestiones").then(response => {
+          this.gestion_dia = response.data[2];
+          this.gestion_semana = response.data[1];
+            });
+        },
+    color(){
+      return{
+        'bg-danger' : this.gestion_semana <= 10,
+        'bg-warning' : this.gestion_semana > 10 && this.gestion_semana < 20,
+        'bg-success' : this.gestion_semana >= 20
+      }
+    },
     ////Validaciones solo Números
     isNumber: function (evt) {
       evt = evt ? evt : window.event;
@@ -630,6 +705,7 @@ export default {
               this.typeAlert = "info";
               this.alert = true;
               this.colorMen = "#FFC30F";
+              this.num_doc_persona=this.buscarValor
 
               this.listaTipificacion();
             } else {
@@ -657,10 +733,15 @@ export default {
               this.tip_doc = this.arrayDataPersona[0].tip_doc;
               this.telefono1_persona = this.arrayDataPersona[0].telefono1_persona;
               this.telefono2_persona = this.arrayDataPersona[0].telefono2_persona;
+              this.tipificacion = this.arrayDataPersona[0].tipificacion;
               this.fecha_agendamiento = this.arrayDataPersona[0].fecha_agendamiento;
+              if(this.fecha_agendamiento < this.minimo || this.tipificacion ==2){
+                this.fecha_agendamiento = ""
+              }
               this.direcc_residencia_persona = this.arrayDataPersona[0].direcc_residencia_persona;
               this.barrio_persona = this.arrayDataPersona[0].barrio_persona;
-
+              this.hora_agendamiento1 = this.arrayDataPersona[0].hora_agendamiento;
+              
               this.listaTipificacion();
             }
           })
@@ -684,73 +765,76 @@ export default {
           console.log("error " + error);
         });
     },
+    validFecha(){
+      this.alert=false;
+      if (this.id_tip==1 && this.fecha_agendamiento > this.minimo){
+        this.mensajeAlert = "Ya existe una cita asignada y vigente.";
+        this.typeAlert = "error";
+        this.alert = true;
+        this.colorMen = "#FF0033";
+        console.log('Ya existe una cita asignada y vigente.')
+
+      }else if (this.id_tip==2 && this.fecha_agendamiento==""){
+        this.mensajeAlert = "No hay citas asignadas para el cliente. "+this.num_doc_persona;
+        this.typeAlert = "error";
+        this.alert = true;
+        this.colorMen = "#FF0033";
+        console.log('No hay citas asigandas.')
+      }else{
+        this.dialog = true
+      }
+
+    },
 
     agendarCita() {
+          if (this.id_tip==2){
+            this.fecha_agendamiento1=this.fecha_agendamiento
+            
+          }
+          if(this.fecha_agendamiento1==null){
+            this.mens='Seleccione una fecha en el calendario.'
+        }else{
+          this.formulariogestion = 0;
+          /* this.dialog = false; */
 
-      if(this.fecha_agendamiento1==null){
-        this.mens='Seleccione una fecha en el calendario.'
-      }else{
-      
-        this.formulariogestion = 0;
-        this.dialog = false;
+          //Mensaje de confirmación
+          this.alert = true;
+          this.colorMen = "#008000";
+          
+        //Petición para guardar los el registro en la base de datos
+        axios.post('actualizar-master',{
 
-        //Mensaje de confirmación
-        this.alert = true;
-        this.colorMen = "#008000";
-        console.log('Datos del agendamiento.')
-        console.log(this.fecha_agendamiento)
-        console.log(this.hora_agendamiento)
-        console.log(this.nombre_persona +' '+this.apellido_persona)
-        if (this.id_tip == 1) {
-          this.mensajeAlert =
-            "¡Cita Agendada con exito! Cliente: " + this.buscarValor;
-        } else if (this.id_tip == 2) {
-          this.mensajeAlert =
-            "¡Cita Cancelada con exito! Cliente: " + this.buscarValor;
+              idmaster: this.idmaster,
+              num_doc_persona: this.num_doc_persona,
+              nombre_persona: this.nombre_persona,
+              apellido_persona: this.apellido_persona,
+              correo_persona: this.correo_persona,
+              ciudad_persona: this.ciudad_persona,
+              tipo_doc_persona: this.tipo_doc_persona,
+              telefono1_persona: this.telefono1_persona,
+              telefono2_persona: this.telefono2_persona,
+              direcc_residencia_persona: this.direcc_residencia_persona,
+              barrio_persona: this.barrio_persona,
+              fecha_agendamiento: this.fecha_agendamiento,
+              hora_agendamiento: this.hora_agendamiento,
+              tipificacion: this.id_tip,
+              observ_persona: this.observ_persona,
+
+        }).then((response)=>{
+        
+              if (this.id_tip == 1) {
+                this.mensajeAlert =
+                  "¡Cita Agendada con exito! Cliente: " + this.buscarValor;
+              } else if (this.id_tip == 2) {
+                this.mensajeAlert =
+                  "¡Cita Cancelada con exito! Cliente: " + this.buscarValor;
+              }
+        })
+        //Fin Pettición para guardar el registro en la base de datos
+
         }
-      }
       },
-      /* axios.post("actualizar-master", {
-            'idmaster': this.idmaster,
-            'num_doc_persona': this.num_doc_persona,
-            'nombre_persona': this.nombre_persona,
-            'apellido_persona': this.apellido_persona,
-            'correo_persona': this.correo_persona,
-            'ciudad_persona': this.ciudad_persona,
-            'tipo_doc_persona': this.tipo_doc_persona,
-            'telefono1_persona': this.telefono1_persona,
-            'telefono2_persona': this.telefono2_persona,
-            'fecha_agendamiento': this.fecha_agendamiento,
-            'direcc_residencia_persona': this.direcc_residencia_persona,
-            'barrio_persona': this.barrio_persona,
-            'fecha_agendamiento': this.fecha_agendamiento,
-            'hora_agendamiento': this.hora_agendamiento,
-            'tipificacion': this.tipificacion,
-            'sub_tipificacion': this.sub_tipificacion,
-            'observ_persona': this.observ_persona,
-          })
-          .then(function (response) {
-            if (response.status == 210) {
-              this.arrayMensaje.push(
-                "No hay información para guardar, si no desea continuar haga click sobre el botón Cancelar."
-              );
-
-              this.banMensaje = true;
-              this.colorMensaje = "error";
-            } else {
-              this.formulariogestion = 0;
-              this.mensajeAlert =
-                "Datos actualizados satisfactoriamente. Cliente: " +
-                this.buscarValor;
-              this.colorMen = "#008000";
-              this.alert = true;
-
-              this.buscarValor = "";
-            }
-          })
-          .catch(function (error) {});
-      } */
-
+     
       
     //Limpiar los datos del cliente cuando se realiza una nueva busqueda
     limpiarDatos() {
@@ -780,6 +864,7 @@ export default {
       this.fecha_agendamiento = "";
       this.fecha_agendamiento1 = null;
       this.hora_agendamiento = "";
+      this.hora_agendamiento1 = "";
       this.dialog=false,
       this.mens="",
 
@@ -796,7 +881,8 @@ export default {
       this.telefono1_persona= "";
       this.telefono2_persona= "";
       this.direcc_residencia_persona= "";
-      this.barrio_persona= "";
+      this.barrio_persona = "";
+      this.observ_persona = "";
     },
 
     //Validador del formulario agendamiento

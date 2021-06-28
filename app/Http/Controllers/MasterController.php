@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Master;
+use App\Master_historico;
 use App\Tipo_identificacion;
 use App\Municipios;
 use DB;
@@ -45,53 +46,91 @@ class MasterController extends Controller
         return [$persona, $municipios, $tipo_doc];
 
     }
+
     public function actualizar (Request $request)
     { 
-
-        // dd($request->all());
-
-        /* if(!$request->preKit && !$request->preBono && !$request->observacion){
-            $msne = "No hay información para guardar, si no desea continuar haga click sobre el botón Cancelar.";
-            return response()->json(['mensaje' => $msne], 210);
-
-        } */
-
-
         DB::beginTransaction();
         
         try {
-
-            $clienteMaster = Master::where('idmaster', '=', $request->idmaster)->first();
-
-            if(isset($clienteMaster)){
-                //recuperamos un registro de un modelo a partir de su ID sin necesidad de comprobar si existe
-                //En el caso de no existir lanza una exepción NodelNotFoundException
-                $master = Gestion::findOrFail($clienteMaster->idmaster);
-            }else{
+           
+            if($request->idmaster==0){
                 //Si no existe instanciamos un nuevo objeto
-                $master = new Master;
+                $clienteMaster =  new Master;
+            }else{
+                
+                $clienteMaster = Master::find($request->idmaster);
             }
-               
-            $master->nombre_persona          = $request->nombre_persona;
-            $master->apellido_persona        = $request->apellido_persona;
-            $master->tipo_doc_persona        = $request->tipo_doc_persona;
-            $master->fecha_agendamiento      = $request->fecha_agendamiento;
-            /* $master->user_id                 = auth()->user()->id; //1 para pruebas */
-            $master->observ_persona          = $request->observ_persona;
-            $master->save();
-
-            $master_historico                     = new Master_historico;
-            $master_historico->num_doc_persona    = $request->num_doc_persona;
-            /* $master_historico->user_id                 = auth()->user()->id; //1 para pruebas */
-            $master_historico->save();
+                
             
+            $clienteMaster->num_doc_persona            = $request->num_doc_persona; 
+            $clienteMaster->nombre_persona             = $request->nombre_persona;
+            $clienteMaster->apellido_persona           = $request->apellido_persona;
+            $clienteMaster->tipo_doc_persona           = $request->tipo_doc_persona;
+            $clienteMaster->correo_persona             = $request->correo_persona;
+            $clienteMaster->ciudad_persona             = $request->ciudad_persona;
+            $clienteMaster->telefono1_persona          = $request->telefono1_persona;
+            $clienteMaster->telefono2_persona          = $request->telefono2_persona;
+            $clienteMaster->direcc_residencia_persona  = $request->direcc_residencia_persona;
+            $clienteMaster->barrio_persona             = $request->barrio_persona;
+            $clienteMaster->tipificacion               = $request->tipificacion;
+            $clienteMaster->fecha_agendamiento         = $request->fecha_agendamiento;
+            $clienteMaster->hora_agendamiento          = $request->hora_agendamiento;
+            /* $clienteMaster->user_id                 = auth()->user()->id; //1 para pruebas */
+            $clienteMaster->observ_persona             = $request->observ_persona;
+            $clienteMaster->save();
+            
+
+            $historico                             =  new Master_historico;
+            $historico->num_doc_persona            = $request->num_doc_persona; 
+            $historico->nombre_persona             = $request->nombre_persona;
+            $historico->apellido_persona           = $request->apellido_persona;
+            $historico->tipo_doc_persona           = $request->tipo_doc_persona;
+            $historico->correo_persona             = $request->correo_persona;
+            $historico->ciudad_persona             = $request->ciudad_persona;
+            $historico->telefono1_persona          = $request->telefono1_persona;
+            $historico->telefono2_persona          = $request->telefono2_persona;
+            $historico->direcc_residencia_persona  = $request->direcc_residencia_persona;
+            $historico->barrio_persona             = $request->barrio_persona;
+            $historico->tipificacion               = $request->tipificacion;
+            $historico->fecha_agendamiento         = $request->fecha_agendamiento;
+            $historico->hora_agendamiento          = $request->hora_agendamiento;
+            /* $clienteMaster->user_id             = auth()->user()->id; //1 para pruebas */
+            $historico->observ_persona             = $request->observ_persona;
+            $historico->save();
+
             DB::commit();
 
         }catch (\Exception $e) {
             DB::rollback();
             dd($e);
         }
+
+           
+
+    }
+
+    public function gestiones(){
         
+        $gestiones = Master_historico::join('tipificacion','master_historico.tipificacion','=','tipificacion.idtipificacion')
+        ->select(
+             DB::raw("CONCAT(master_historico.nombre_persona,' ',master_historico.apellido_persona) as full_name"),
+            'master_historico.idmaster_historico as id',
+            'master_historico.num_doc_persona as documento',
+            'tipificacion.detalle as tip',
+            'master_historico.telefono1_persona as telefono',
+             DB::raw('DATE(master_historico.created_at) as fecha_gestionado'),    
+        )
+        ->orderBy("id", "desc")
+        ->get();
+        
+        $hoy = Carbon::now();
+        $lunes = $hoy->startOfWeek()->format('Y-m-d');
+        $domingo = $hoy->endOfWeek()->format('Y-m-d');
+        
+        $gestiones_semana = Master_historico::whereBetween('created_at', [$lunes.' 00:00:00', $domingo.' 23:59:59'])->count();
+        $gestiones_dia = Master_historico::whereBetween('created_at', [$hoy.' 00:00:00', $hoy.' 23:59:59'])->count();
+        
+        return [$gestiones,$gestiones_semana,$gestiones_dia];
 
     }
 
@@ -103,6 +142,19 @@ class MasterController extends Controller
      */
     public function exportExcel(Request $request)
     {
-        return Excel::download(new ReportesExport, 'Master.xlsx');
+        $filtro = $request->valor;
+        $masterHistorico = Master_historico::join('tipificacion','master_historico.tipificacion','=','tipificacion.idtipificacion')
+        ->select(
+             DB::raw("CONCAT(master_historico.nombre_persona,' ',master_historico.apellido_persona) as full_name"),
+            'master_historico.idmaster_historico as id',
+            'master_historico.num_doc_persona as documento',
+            'tipificacion.detalle as tip',
+            'master_historico.telefono1_persona as telefono',
+            'created_at',    
+        )
+        ->whereBetween('created_at', [$filtro[0].' 00:00:00', $filtro[1].' 23:59:59'])
+        ->get();
+
+        return $masterHistorico;
     }
 }
