@@ -8,7 +8,6 @@
         v-model="dates"
         range
         @change="getItems"
-        
       ></v-date-picker>
     </v-col>
     <v-col
@@ -21,7 +20,7 @@
         prepend-icon="mdi-calendar"
         readonly
       ></v-text-field>
-      model: {{ dates }}
+      Filtro: {{ dates }}
 
       <export-excel
     class   = "btn btn-default"
@@ -29,8 +28,7 @@
     :fields = "json_fields"
     worksheet = "My Worksheet"
     name    = "master.xls">
- 
-    Download Excel (you can customize this with html code!)
+    <h4>Descargar reporte de gestiones en formato Excel.</h4>
  
 </export-excel>
     </v-col>
@@ -51,7 +49,6 @@
             'Tipificación': 'tip',
             'Telefono 1' : 'telefono'
             },
-        
         json_data: [ ],
         json_meta: [
             [

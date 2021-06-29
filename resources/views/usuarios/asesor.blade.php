@@ -1,8 +1,8 @@
 @extends('principal')
-  @section('asesor')
 
-    <nuevagestion-component></nuevagestion-component>
-    
-    <gestiones-component></gestiones-component>
+  @section('asesor')
+ 
+    <asesorindex-component></asesorindex-component>
+ 
   @endsection
   

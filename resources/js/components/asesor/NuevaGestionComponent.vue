@@ -1,44 +1,58 @@
 <template>
   <v-container>
       <v-bottom-navigation
-        :value="value"
-        color="indigo"
-        grow
-        
-      >
-        <v-btn>
-          <span>Gestiones</span>
+            :value="value"
+            color="indigo"
+            grow
+            
+        >
+            <v-btn
+            @click="gestionesOk"
+            >
+            <span>Gestiones</span>
+            
+            <v-icon>mdi-briefcase-edit</v-icon>
+            </v-btn>
 
-          <v-icon>mdi-history</v-icon>
-        </v-btn>
+            <v-btn
+            @click="nueva_gestion"
+            >
+            <span>Nueva Gestión</span>
 
-        <v-btn>
-          <span>Nueva Gestión</span>
-
-          <v-icon>mdi-heart</v-icon>
-        </v-btn>
-      </v-bottom-navigation>
+            <v-icon>mdi-newspaper-plus</v-icon>
+            </v-btn>
+        </v-bottom-navigation>
 
       <div class="pa-6">
+        <v-row
+        class="pa-2 justify-center align-center">
 
-        <h3>Gestiones a la semana: {{ gestion_semana }}</h3>
+        <h5>Record de Agendamientos en la semana entre el <strong class="green--text"> lunes {{ lunes }} </strong>al <strong class="green--text"> domingo  {{ domingo }}</strong>:</h5>
+        </v-row>
+        <v-row
+        class="pa-3 justify-center align-center">
+        <h3><strong>  {{ agendamiento_semana }}</strong></h3>
+            </v-row>
             <div class="progress">
                 <div 
                 class="progress-bar " 
                 role="progressbar" 
                 
-                :style="{'width': gestion_semana+'%'}"
+                :style="{'width': agendamiento_semana+'%'}"
                 aria-valuenow="20" 
                 aria-valuemin="0" 
                 aria-valuemax="80"
                 :class="color"
-                >{{ gestion_semana }}%</div>
+                >{{ agendamiento_semana }}%</div>
               </div>
-      </div>        
+        
+      </div>
+            
    
     <v-flex>
+      
       <!-- Formulario consulta de persona -->
-      <template v-if="nuevaGestion==true">
+      <template v-if="nuevaGestion==true && menu==2">
         <div>
           <v-expansion-panels
             v-model="panel1"
@@ -89,6 +103,7 @@
                         @keyup.enter="buscarCliente()"
                         @paste.prevent
                       >
+                      
                       </v-text-field>
                     </v-col>
                     <!-- aqui va el boton -->
@@ -98,7 +113,9 @@
                       elevation="8"
                       large
                       @click="buscarCliente()"
-                      >Buscar</v-btn>
+                      >
+                      <v-icon>mdi-file-search-outline</v-icon>
+                      Buscar</v-btn>
                     <!-- fin boton -->
                   </v-row>
                 </div>
@@ -132,7 +149,7 @@
     
 
     <!-- Información de la persona -->
-    <template v-if="formulariogestion == 1">
+    <template v-if="formulariogestion == 1 && menu==2">
       <div>
         <v-expansion-panels v-model="panel" :disabled="disabled" multiple>
           <v-expansion-panel>
@@ -291,6 +308,7 @@
                             >
                               <tab-content
                                 title="Información Personal"
+                              
                                 :before-change="() => validateAsync('form')"
                                 
                               >
@@ -490,6 +508,7 @@
                                 
 
                                 </tab-content>
+
                               </template> 
                               
                               <tab-content
@@ -497,9 +516,19 @@
                               @on-validate="agendarCita"
                               >
                                 <div>
+                                  <div>
                                       <p class="font-weight-black text-subtitle-2 text-center error--text text--darken-2" >
                                         {{ mens }}
                                       </p>
+                                  </div>
+                                      <template v-if="advertencia==false">
+                                        <v-row
+                                        class="pa-2 justify-center align-center">
+                                          <img class="justify-center align-center" src="img/check.png" alt="check" width="140" >
+                                        </v-row>
+                                      </template>
+                                    
+                                      
                                     </div>
                               </tab-content>
                             </form-wizard>
@@ -521,6 +550,9 @@
         </v-expansion-panels>
       </div>
     </template>
+    <template v-if="menu==1">
+      <gestiones-component></gestiones-component>
+    </template>
   </v-container>
 </template>
 
@@ -529,8 +561,15 @@ export default {
   data: () => ({
     gestiones:false,
     nuevaGestion:true,
-    gestion_dia:0,
-    gestion_semana:0,
+    agendamiento_dia:0,
+    agendamiento_semana:0,
+    lunes:"",
+    domingo:"",
+
+    value:0,
+    menu:0,
+    advertencia:false,
+    
 
     nombreAsesor: "",
     formulariogestion: 0,
@@ -643,23 +682,29 @@ export default {
   }),
   created () {
         this.getCount();
-        this.color();
     },
   
   methods: {
     getCount() {
         axios.get("gestiones").then(response => {
-          this.gestion_dia = response.data[2];
-          this.gestion_semana = response.data[1];
+          
+          this.agendamiento_dia = response.data[2];
+          this.agendamiento_semana = response.data[1];
+          this.lunes=response.data[3];
+          this.domingo=response.data[4];
+
             });
         },
-    color(){
-      return{
-        'bg-danger' : this.gestion_semana <= 10,
-        'bg-warning' : this.gestion_semana > 10 && this.gestion_semana < 20,
-        'bg-success' : this.gestion_semana >= 20
-      }
+
+    gestionesOk(){
+      this.menu=1;
+      this.alert=false;
     },
+    nueva_gestion(){
+      this.limpiarDatos()
+      this.menu=2;
+    },
+
     ////Validaciones solo Números
     isNumber: function (evt) {
       evt = evt ? evt : window.event;
@@ -785,7 +830,6 @@ export default {
       }
 
     },
-
     agendarCita() {
           if (this.id_tip==2){
             this.fecha_agendamiento1=this.fecha_agendamiento
@@ -793,6 +837,7 @@ export default {
           }
           if(this.fecha_agendamiento1==null){
             this.mens='Seleccione una fecha en el calendario.'
+            this.advertencia=true;
         }else{
           this.formulariogestion = 0;
           /* this.dialog = false; */
@@ -859,6 +904,7 @@ export default {
       //Para el panel de expansión
       this.panel = [0, 1];
       this.disabled = true;
+      this.advertencia=false;
 
       //gestión hora y fecha agendamiento
       this.fecha_agendamiento = "";
@@ -897,8 +943,18 @@ export default {
       },
 
   },
+  computed:{
+    
+    color(){
+      return{
+        'bg-danger' : this.agendamiento_semana <= 10,
+        'bg-warning' : this.agendamiento_semana > 10 && this.agendamiento_semana < 20,
+        'bg-success' : this.agendamiento_semana >= 20
+      }
+    },
+    
+  },
 
   mounted() {},
 };
 </script>
-<style>
