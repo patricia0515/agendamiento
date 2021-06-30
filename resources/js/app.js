@@ -17,13 +17,17 @@ import Vue from "vue";
 import excel from "vue-excel-export";
 Vue.use(excel);
 
-
 //Para dividir el flujo de los formularios
 import VueFormWizard from "vue-form-wizard";
 import "vue-form-wizard/dist/vue-form-wizard.min.css";
 Vue.use(VueFormWizard);
 
 //Asesor
+
+Vue.component(
+    "asesorindex-component",
+    require("./components/asesor/AsesorIndexComponent.vue").default
+);
 Vue.component(
     "nuevagestion-component",
     require("./components/asesor/NuevaGestionComponent.vue").default

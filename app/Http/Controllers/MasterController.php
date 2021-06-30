@@ -116,6 +116,7 @@ class MasterController extends Controller
              DB::raw("CONCAT(master_historico.nombre_persona,' ',master_historico.apellido_persona) as full_name"),
             'master_historico.idmaster_historico as id',
             'master_historico.num_doc_persona as documento',
+            'master_historico.tipificacion as tipificacion',
             'tipificacion.detalle as tip',
             'master_historico.telefono1_persona as telefono',
              DB::raw('DATE(master_historico.created_at) as fecha_gestionado'),    
@@ -123,14 +124,23 @@ class MasterController extends Controller
         ->orderBy("id", "desc")
         ->get();
         
+        //Declaro fechas (Hoy, Lunes y domingo de la semana actual)
         $hoy = Carbon::now();
         $lunes = $hoy->startOfWeek()->format('Y-m-d');
         $domingo = $hoy->endOfWeek()->format('Y-m-d');
         
-        $gestiones_semana = Master_historico::whereBetween('created_at', [$lunes.' 00:00:00', $domingo.' 23:59:59'])->count();
-        $gestiones_dia = Master_historico::whereBetween('created_at', [$hoy.' 00:00:00', $hoy.' 23:59:59'])->count();
-        
-        return [$gestiones,$gestiones_semana,$gestiones_dia];
+        //Cuento gestiones durante la semana en curso donde lunes el es inicio y domingo el final
+        $gestiones_semana = Master_historico::whereBetween('created_at', [$lunes.' 00:00:00', $domingo.' 23:59:59']);
+        //Cuento las gestiones correspondientes a Agendamiento de Citas en la semana actual.
+        $agendamiento_semanal=$gestiones_semana->where('tipificacion','=',1)->count();
+
+        //Cuento gestiones durante el día en curso.
+        $gestiones_dia = Master_historico::whereBetween('created_at', [$hoy.' 00:00:00', $hoy.' 23:59:59']);
+        //Cuento las gestiones correspondientes a Agendamiento de Citas en el día actual.
+        $agendamiento_diario=$gestiones_dia->where('tipificacion','=',1)->count();
+        $lunes = $hoy->startOfWeek()->format('d-m-Y');
+        $domingo = $hoy->endOfWeek()->format('d-m-Y');
+        return [$gestiones,$agendamiento_semanal,$agendamiento_diario,$lunes,$domingo];
 
     }
 

@@ -1,4 +1,4 @@
-<template v-if="gestiones==true">
+<template>
 
   <v-data-table
     :headers="headers"
@@ -14,8 +14,10 @@
 <script>
   export default {
     data: () => ({
-        gestiones_semana:0,
-        gestiones_dia:0,
+        agendamiento_semana:0,
+        agendamiento_dia:0,
+        lunes:"",
+        domingo:"",
               
         headers: [
             {
@@ -42,10 +44,16 @@
         getItems() {
         axios.get("gestiones").then(response => {
           this.desserts = response.data[0];
-          this.gestiones_semana = response.data[1];
-          this.gestiones_dia = response.data[2];
-           console.log(this.gestiones_semana);
-           console.log(this.gestiones_dia);
+          this.agendamiento_semana = response.data[1];
+          this.agendamiento_dia = response.data[2];
+          this.lunes=response.data[3];
+          this.domingo=response.data[4];
+
+           console.log(this.agendamiento_semana);
+           console.log(this.agendamiento_dia);
+           console.log('RANGO DE SEMANA')
+           console.log(this.lunes)
+           console.log(this.domingo)
             });
         },
   }

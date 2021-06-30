@@ -8,7 +8,6 @@
         v-model="dates"
         range
         @change="getItems"
-        
       ></v-date-picker>
     </v-col>
     <v-col
