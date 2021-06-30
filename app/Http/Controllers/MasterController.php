@@ -140,6 +140,7 @@ class MasterController extends Controller
      * 
      * @return ReportesExport
      */
+    //Por medio de esta funcion, generamos la descarga del archivo excel para Master_Historico
     public function exportExcel(Request $request)
     {
         $filtro = $request->valor;
@@ -147,14 +148,68 @@ class MasterController extends Controller
         ->select(
              DB::raw("CONCAT(master_historico.nombre_persona,' ',master_historico.apellido_persona) as full_name"),
             'master_historico.idmaster_historico as id',
+            'master_historico.tipo_doc_persona as tipo_doc',
             'master_historico.num_doc_persona as documento',
-            'tipificacion.detalle as tip',
-            'master_historico.telefono1_persona as telefono',
-            'created_at',    
+            'master_historico.telefono1_persona as telefono_1',
+            'master_historico.telefono2_persona as telefono_2',
+            'master_historico.correo_persona as correo_persona',
+            'master_historico.fecha_agendamiento as fecha_agendamiento',
+            'master_historico.usuario_agendamiento as usuario',
+            'master_historico.mensajet_persona as mensajet_persona ',
+            'master_historico.observ_persona as observ_persona ',
+            'tipificacion.detalle as tipificacion',
+            'master_historico.sub_tipificacion as sub_tipificacion ',
+            'master_historico.tipo_gestion as tipo_gestion ',
+            'master_historico.hora_agendamiento as hora_agendamiento',
+            'master_historico.log_historico as log_historico',
+            'master_historico.fase_venta as fase_venta',
+            'master_historico.direcc_residencia_persona as direcc_residencia_persona',
+            'master_historico.barrio_persona as barrio_persona',
+            'master_historico.ciudad_persona as ciudad_persona',
+            'master_historico.created_at as creacion',    
         )
-        ->whereBetween('created_at', [$filtro[0].' 00:00:00', $filtro[1].' 23:59:59'])
+        ->whereBetween('master_historico.created_at', [$filtro[0].' 00:00:00', $filtro[1].' 23:59:59'])
         ->get();
-
+        if ((count($masterHistorico))==0){
+            $mensaje = 'la consulta no tiene ningun resultado';
+            return response()->json($mensaje,210);
+        }
         return $masterHistorico;
+    }
+
+    //Por medio de esta funcion, generamos la descarga del archivo excel para Master 
+    public function exportExcel2(Request $request)
+    {
+        $filtro = $request->valor;
+        $master = Master::join('tipificacion', 'master.tipificacion', '=', 'tipificacion')
+        ->select(
+            DB::raw("CONCAT(master.nombre_persona, '', master.apellido_persona) as full_name"),
+            'master.idmaster as id',
+            'master.tipo_doc_persona as tipo_doc',
+            'master.num_doc_persona as documento',
+            'master.telefono1_persona as telefono_1',
+            'master.telefono2_persona as telefono_2',
+            'master.correo_persona as correo_persona',
+            'master.fecha_agendamiento as fecha_agendamiento',
+            'master.usuario_agendamiento as usuario',
+            'master.mensajet_persona as mensajet_persona ',
+            'master.observ_persona as observ_persona ',
+            'tipificacion.detalle as tipificacion',
+            'master.sub_tipificacion as sub_tipificacion ',
+            'master.tipo_gestion as tipo_gestion ',
+            'master.hora_agendamiento as hora_agendamiento',
+            'master.fase_venta as fase_venta',
+            'master.direcc_residencia_persona as direcc_residencia_persona',
+            'master.barrio_persona as barrio_persona',
+            'master.ciudad_persona as ciudad_persona',
+            'master.created_at as creacion',
+        )
+        ->whereBetween('master.created_at', [$filtro[0].' 00:00:00', $filtro[1].' 23:59:59'])
+        ->get();
+        if ((count($master))==0){
+            $mensaje = 'la consulta no tiene ningun resultado';
+            return response()->json($mensaje,210);
+        }
+        return  $master;
     }
 }
