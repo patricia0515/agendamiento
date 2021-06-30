@@ -23,10 +23,17 @@
                     <img class="navbar-brand" src="img/logo-famisanar.png" alt="famisanar" width="300" height="90">
                 </div>
             </nav>
-            <v-app>
-
-                <reportesgestion-component></resportesgestion-component>
-            </v-app>
+            <div class="container" style="padding: 45px">
+                <div class="row justify-content-center">
+                    {{-- <div class="col"> --}}
+                        {{-- <div class="card"> --}}
+                            <v-app>
+                                <reportesgestion-component></resportesgestion-component>
+                            </v-app>
+                        {{-- </div> --}}
+                    {{-- </div> --}}
+                </div>       
+            </div>
         </div>
         <script src="{{ mix('js/app.js') }}"></script>
     </body>

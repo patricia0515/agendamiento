@@ -2948,18 +2948,123 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       dates: [],
+      dates2: [],
       mensaje: '',
+      mensaje2: '',
+      //Codigo de la alerta
+      alert: false,
+      mensajeAlert: [],
+      typeAlert: "",
+      colorMen: "",
+      icon: "",
+      //Encabezados del archivo excel para la descarga de Master_Historico
       json_fields: {
         'Nombre': 'full_name',
-        'documento': 'documento',
-        'Tipificación': 'tip',
-        'Telefono 1': 'telefono'
+        'Tipo_doc': 'tipo_doc',
+        'Num_Doc_Persona': 'documento',
+        'Telefono_1': 'telefono_1',
+        'Telefono_2': 'telefono_2',
+        'Correo_Persona': 'correo_persona',
+        'Fecha_agendamiento': 'fecha_agendamiento',
+        'Observ_Persona': 'observ_persona',
+        'Tipificación': 'tipificacion',
+        'Hora_Agendamiento': 'hora_agendamiento',
+        'Direcc_Residencia_Persona': 'direcc_residencia_persona',
+        'Barrio_Persona': 'barrio_persona',
+        'Ciudad_Persona': 'ciudad_persona'
       },
+      //Encabezados del archivo excel para la descarga de Master
+      json_fields2: {
+        'Nombre': 'full_name',
+        'Tipo_doc': 'tipo_doc',
+        'Num_Doc_Persona': 'documento',
+        'Telefono_1': 'telefono_1',
+        'Telefono_2': 'telefono_2',
+        'Correo_Persona': 'correo_persona',
+        'Fecha_agendamiento': 'fecha_agendamiento',
+        'Observ_Persona': 'observ_persona',
+        'Tipificación': 'tipificacion',
+        'Hora_Agendamiento': 'hora_agendamiento',
+        'Direcc_Residencia_Persona': 'direcc_residencia_persona',
+        'Barrio_Persona': 'barrio_persona',
+        'Ciudad_Persona': 'ciudad_persona'
+      },
+      //Por medio de este se generan los datos que se almacenara en el archivo excel
       json_data: [],
+      json_data2: [],
       json_meta: [[{
         'key': 'charset',
         'value': 'utf-8'
@@ -2967,21 +3072,79 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    //Metodo para la descarga de Master historico
     getItems: function getItems() {
       var _this = this;
 
+      this.limpiarDatos();
       console.log(this.dates);
       axios.post('reportExcel', {
         'valor': this.dates
       }).then(function (response) {
-        _this.json_data = response.data;
-        console.log(_this.json_data);
+        if (response.status == 210) {
+          _this.mensaje = response.data;
+          _this.icon = "mdi-cancel";
+          _this.mensajeAlert = "¡No hay datos para exportar de Master_Historico!";
+          _this.typeAlert = "alert";
+          _this.alert = true;
+          _this.colorMen = "#FF2D00";
+          console.log(_this.mensaje);
+        } else {
+          _this.json_data = response.data; //Mensaje de alerta
+
+          _this.alert = true;
+          _this.typeAlert = "success";
+          _this.colorMen = "#008000";
+          _this.mensajeAlert = "Se han encontrado registros en Master_historico ¡De click en exportar Historico! ";
+          console.log(_this.json_data);
+        }
       });
+    },
+    //Metodo para la descarga de Master
+    getItems2: function getItems2() {
+      var _this2 = this;
+
+      this.limpiarDatos();
+      console.log(this.dates2);
+      axios.post('reportExcel2', {
+        'valor': this.dates2
+      }).then(function (response) {
+        if (response.status == 210) {
+          _this2.mensaje2 = response.data; //Mensaje de alerta error
+
+          _this2.icon = "mdi-cancel";
+          _this2.mensajeAlert = "¡No hay datos para exportar de Master!";
+          _this2.typeAlert = "alert";
+          _this2.alert = true;
+          _this2.colorMen = "#FF2D00";
+          console.log(_this2.mensaje2);
+        } else {
+          _this2.json_data2 = response.data; //Mensaje de alerta succes
+
+          _this2.alert = true;
+          _this2.typeAlert = "success";
+          _this2.colorMen = "#008000";
+          _this2.mensajeAlert = "Se han encontrado registros en Master ¡De click en exportar Gestión!";
+          console.log(_this2.json_data2);
+        }
+      });
+    },
+    //Por medio de este codigo se limpian los datos, cada vez que se genere una descarga
+    limpiarDatos: function limpiarDatos() {
+      //Para Alerta
+      this.alert = false;
+      this.mensajeAlert = [];
+      this.typeAlert = "";
+      this.colorMen = "";
+      this.icon = "";
     }
   },
   computed: {
     dateRangeText: function dateRangeText() {
       return this.dates.join(' ~ ');
+    },
+    dateRangeText2: function dateRangeText2() {
+      return this.dates2.join(' ~ ');
     }
   }
 });
@@ -41721,7 +41884,7 @@ var render = function() {
         [
           _c("v-text-field", {
             attrs: {
-              label: "Date range",
+              label: "Reportes Historico",
               "prepend-icon": "mdi-calendar",
               readonly: ""
             },
@@ -41733,24 +41896,141 @@ var render = function() {
               expression: "dateRangeText"
             }
           }),
-          _vm._v("\n      Filtro: " + _vm._s(_vm.dates) + "\n\n      "),
+          _vm._v(" "),
           _c(
             "export-excel",
             {
-              staticClass: "btn btn-default",
+              staticClass: "btn btn-success",
               attrs: {
                 data: _vm.json_data,
                 fields: _vm.json_fields,
-                worksheet: "My Worksheet",
-                name: "master.xls"
+                worksheet: "Reportes Historico",
+                name: "MasterHistorico.xls"
               }
             },
-            [
-              _c("h4", [
-                _vm._v("Descargar reporte de gestiones en formato Excel.")
-              ])
-            ]
-          )
+            [_vm._v("\n\n    Exportar Historico\n\n    ")]
+          ),
+          _vm._v(" "),
+          _c("v-flex", [
+            _c(
+              "div",
+              [
+                _c(
+                  "v-alert",
+                  {
+                    attrs: {
+                      border: "top",
+                      elevation: "3",
+                      "close-text": "Close Alert",
+                      color: _vm.colorMen,
+                      type: _vm.typeAlert,
+                      icon: _vm.icon,
+                      "colored-border": "",
+                      dismissible: ""
+                    },
+                    model: {
+                      value: _vm.alert,
+                      callback: function($$v) {
+                        _vm.alert = $$v
+                      },
+                      expression: "alert"
+                    }
+                  },
+                  [_c("strong", [_vm._v(_vm._s(_vm.mensajeAlert))])]
+                )
+              ],
+              1
+            )
+          ])
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _c(
+        "v-col",
+        { attrs: { cols: "12", sm: "6" } },
+        [
+          _c("v-date-picker", {
+            attrs: { range: "" },
+            on: { change: _vm.getItems2 },
+            model: {
+              value: _vm.dates2,
+              callback: function($$v) {
+                _vm.dates2 = $$v
+              },
+              expression: "dates2"
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-col",
+        { attrs: { cols: "12", sm: "6" } },
+        [
+          _c("v-text-field", {
+            attrs: {
+              label: "Reportes Gestión",
+              "prepend-icon": "mdi-calendar",
+              readonly: ""
+            },
+            model: {
+              value: _vm.dateRangeText2,
+              callback: function($$v) {
+                _vm.dateRangeText2 = $$v
+              },
+              expression: "dateRangeText2"
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "export-excel",
+            {
+              staticClass: "btn btn-success",
+              attrs: {
+                data: _vm.json_data2,
+                fields: _vm.json_fields2,
+                worksheet: "Reportes Master",
+                name: "Master.xls"
+              }
+            },
+            [_vm._v("\n\n    Exportar Gestión\n\n    ")]
+          ),
+          _vm._v(" "),
+          _c("v-flex", [
+            _c(
+              "div",
+              [
+                _c(
+                  "v-alert",
+                  {
+                    attrs: {
+                      border: "top",
+                      elevation: "3",
+                      "close-text": "Close Alert",
+                      color: _vm.colorMen,
+                      type: _vm.typeAlert,
+                      icon: _vm.icon,
+                      "colored-border": "",
+                      dismissible: ""
+                    },
+                    model: {
+                      value: _vm.alert,
+                      callback: function($$v) {
+                        _vm.alert = $$v
+                      },
+                      expression: "alert"
+                    }
+                  },
+                  [_c("strong", [_vm._v(_vm._s(_vm.mensajeAlert))])]
+                )
+              ],
+              1
+            )
+          ])
         ],
         1
       )
