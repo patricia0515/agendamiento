@@ -680,10 +680,6 @@ export default {
     ],
 
   }),
-  created () {
-        this.getCount();
-    },
-  
   methods: {
     getCount() {
         axios.get("gestiones").then(response => {
@@ -874,6 +870,7 @@ export default {
                 this.mensajeAlert =
                   "¡Cita Cancelada con exito! Cliente: " + this.buscarValor;
               }
+              this.getCount();
         })
         //Fin Pettición para guardar el registro en la base de datos
 
@@ -955,6 +952,9 @@ export default {
     
   },
 
-  mounted() {},
+  mounted() {
+
+
+  },
 };
 </script>

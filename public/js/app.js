@@ -2655,9 +2655,6 @@ __webpack_require__.r(__webpack_exports__);
       }]
     };
   },
-  created: function created() {
-    this.getCount();
-  },
   methods: {
     getCount: function getCount() {
       var _this = this;
@@ -2830,6 +2827,8 @@ __webpack_require__.r(__webpack_exports__);
           } else if (_this4.id_tip == 2) {
             _this4.mensajeAlert = "¡Cita Cancelada con exito! Cliente: " + _this4.buscarValor;
           }
+
+          _this4.getCount();
         }); //Fin Pettición para guardar el registro en la base de datos
       }
     },
