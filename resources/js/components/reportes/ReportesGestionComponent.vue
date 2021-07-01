@@ -20,7 +20,7 @@
         prepend-icon="mdi-calendar"
         readonly
       ></v-text-field>
-
+ 
       <export-excel
       class   = "btn btn-success"
       :data   = "json_data"
