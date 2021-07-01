@@ -2543,7 +2543,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2553,6 +2552,7 @@ __webpack_require__.r(__webpack_exports__);
       agendamiento_semana: 0,
       lunes: "",
       domingo: "",
+      porcentaje: 0,
       value: 0,
       menu: 0,
       advertencia: false,
@@ -2660,10 +2660,11 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios.get("gestiones").then(function (response) {
-        _this.agendamiento_dia = response.data[2];
         _this.agendamiento_semana = response.data[1];
+        _this.agendamiento_dia = response.data[2];
         _this.lunes = response.data[3];
         _this.domingo = response.data[4];
+        _this.porcentaje = response.data[5];
       });
     },
     gestionesOk: function gestionesOk() {
@@ -2893,7 +2894,10 @@ __webpack_require__.r(__webpack_exports__);
       };
     }
   },
-  mounted: function mounted() {}
+  mounted: function mounted() {
+    this.getCount();
+    console.log(this.porcentaje);
+  }
 });
 
 /***/ }),
@@ -40231,7 +40235,7 @@ var render = function() {
               {
                 staticClass: "progress-bar ",
                 class: _vm.color,
-                style: { width: _vm.agendamiento_semana + "%" },
+                style: { width: _vm.porcentaje + "%" },
                 attrs: {
                   role: "progressbar",
                   "aria-valuenow": "20",
@@ -40239,7 +40243,7 @@ var render = function() {
                   "aria-valuemax": "80"
                 }
               },
-              [_vm._v(_vm._s(_vm.agendamiento_semana) + "%")]
+              [_vm._v(_vm._s(_vm.porcentaje) + "%")]
             )
           ])
         ],

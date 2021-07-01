@@ -133,6 +133,8 @@ class MasterController extends Controller
         $gestiones_semana = Master_historico::whereBetween('created_at', [$lunes.' 00:00:00', $domingo.' 23:59:59']);
         //Cuento las gestiones correspondientes a Agendamiento de Citas en la semana actual.
         $agendamiento_semanal=$gestiones_semana->where('tipificacion','=',1)->count();
+        //Calculo el porcentaje sobre la meta semanal(80 agendamientos)
+        $porcentaje=round((100*$agendamiento_semanal)/80);
 
         //Cuento gestiones durante el día en curso.
         $gestiones_dia = Master_historico::whereBetween('created_at', [$hoy.' 00:00:00', $hoy.' 23:59:59']);
@@ -140,7 +142,7 @@ class MasterController extends Controller
         $agendamiento_diario=$gestiones_dia->where('tipificacion','=',1)->count();
         $lunes = $hoy->startOfWeek()->format('d-m-Y');
         $domingo = $hoy->endOfWeek()->format('d-m-Y');
-        return [$gestiones,$agendamiento_semanal,$agendamiento_diario,$lunes,$domingo];
+        return [$gestiones,$agendamiento_semanal,$agendamiento_diario,$lunes,$domingo,$porcentaje];
 
     }
 

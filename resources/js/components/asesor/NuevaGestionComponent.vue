@@ -37,13 +37,12 @@
                 <div 
                 class="progress-bar " 
                 role="progressbar" 
-                
-                :style="{'width': agendamiento_semana+'%'}"
+                :style="{'width': porcentaje+'%'}"
                 aria-valuenow="20" 
                 aria-valuemin="0" 
                 aria-valuemax="80"
                 :class="color"
-                >{{ agendamiento_semana }}%</div>
+                >{{ porcentaje }}%</div>
               </div>
         
       </div>
@@ -565,6 +564,7 @@ export default {
     agendamiento_semana:0,
     lunes:"",
     domingo:"",
+    porcentaje:0,
 
     value:0,
     menu:0,
@@ -683,11 +683,11 @@ export default {
   methods: {
     getCount() {
         axios.get("gestiones").then(response => {
-          
-          this.agendamiento_dia = response.data[2];
           this.agendamiento_semana = response.data[1];
+          this.agendamiento_dia = response.data[2];
           this.lunes=response.data[3];
           this.domingo=response.data[4];
+          this.porcentaje=response.data[5];
 
             });
         },
@@ -953,8 +953,8 @@ export default {
   },
 
   mounted() {
-
-
+    this.getCount();
+    console.log(this.porcentaje)
   },
 };
 </script>
