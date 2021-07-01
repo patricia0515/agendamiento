@@ -6,14 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Rol extends Model
 {
-    <?php
-
-namespace control_visitantes;
-
-use Illuminate\Database\Eloquent\Model;
-
-class Rol extends Model
-{
     /**
      * Indica si el modelo quiere timestamps
      *
@@ -41,5 +33,4 @@ class Rol extends Model
      * @var array
      */
     protected $fillable = ['id_rol', 'descripcion_rol', 'id_usuario', 'id_modulo', 'numero_rol'];
-}
 }
