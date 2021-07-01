@@ -20,12 +20,11 @@ use Illuminate\Support\Facades\Route;
 //**Validación del usuario en la base de datos crm_masterclaro */
 /* Route::get('/', 'AppMasterController@appmaster');
  */
+////Rutas para Usuario Asesor
 Route::get('/', function () {
     $idRol = 1;
     return view('usuarios/asesor', compact('idRol'));
 });
-
-////Rutas para Usuario Asesor
 Route::post('consultaPersona', 'MasterController@consulta');
 Route::post('listar-tipificaciones', 'TipificacionController@listar');
 Route::post('listar-subtipificaciones', 'TipificacionController@listarSubtipificacion');
