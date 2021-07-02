@@ -18,28 +18,28 @@ class CreateMasterTable extends Migration
 
             $table->string('f_gestion');
             $table->string('f_gestion_asesor');
-            $table->string('f_gestion_agendamiento');
-            $table->string('f_actualizacion');
+            $table->string('f_gestion_agendamiento')->nullable();
+            $table->string('f_actualizacion')->nullable();
             $table->string('nombre_persona');
             $table->string('apellido_persona');
-            $table->string('tipo_doc_persona');
+            $table->integer('tipo_doc_persona');
             $table->string('num_doc_persona');
             $table->string('telefono1_persona');
             $table->string('telefono2_persona');
             $table->string('correo_persona');
             $table->string('fecha_agendamiento');
-            $table->string('usuario_agendamiento');
+            $table->string('usuario_agendamiento')->nullable();
             $table->string('mensajet_persona');
             $table->string('observ_persona');
-            $table->string('tipificacion');
-            $table->string('sub_tipificacion');
-            $table->string('tipo_gestion');
+            $table->integer('tipificacion');
+            $table->integer('sub_tipificacion');
+            $table->string('tipo_gestion')->nullable();
             $table->string('hora_agendamiento');
             $table->string('usuario_gestion');
             $table->string('fase_venta');
             $table->string('direcc_residencia_persona');
             $table->string('barrio_persona');
-            $table->string('ciudad_persona');
+            $table->integer('ciudad_persona');
 
 
             $table->timestamps();
