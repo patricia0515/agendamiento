@@ -20,7 +20,7 @@
         prepend-icon="mdi-calendar"
         readonly
       ></v-text-field>
-
+ 
       <export-excel
       class   = "btn btn-success"
       :data   = "json_data"
@@ -87,7 +87,7 @@
     <v-flex>
       <div>
         <v-alert
-          v-model="alert"
+          v-model="alert2"
           border="top"
           elevation="3"
           close-text="Close Alert"
@@ -97,7 +97,7 @@
           colored-border
           dismissible
         >
-          <strong>{{ mensajeAlert }}</strong>
+          <strong>{{ mensajeAlert2 }}</strong>
         </v-alert>
       </div>
     </v-flex>
@@ -122,6 +122,13 @@
       colorMen: "",
       icon: "",
 
+       //Codigo de la alerta 2
+      alert2: false,
+      mensajeAlert2: [],
+      typeAlert: "",
+      colorMen: "",
+      icon: "",
+
       //Encabezados del archivo excel para la descarga de Master_Historico
       json_fields: {
             'Nombre': 'full_name',
@@ -131,11 +138,9 @@
             'Telefono_2': 'telefono_2',
             'Correo_Persona': 'correo_persona',
             'Fecha_agendamiento': 'fecha_agendamiento',
-            'Observ_Persona': 'observ_persona',
             'Tipificación': 'tipificacion',
             'Hora_Agendamiento': 'hora_agendamiento', 
             'Direcc_Residencia_Persona': 'direcc_residencia_persona',
-            'Barrio_Persona': 'barrio_persona',
             'Ciudad_Persona': 'ciudad_persona'
       },
       //Encabezados del archivo excel para la descarga de Master
@@ -147,11 +152,9 @@
             'Telefono_2': 'telefono_2',
             'Correo_Persona': 'correo_persona',
             'Fecha_agendamiento': 'fecha_agendamiento',
-            'Observ_Persona': 'observ_persona',
             'Tipificación': 'tipificacion',
             'Hora_Agendamiento': 'hora_agendamiento', 
             'Direcc_Residencia_Persona': 'direcc_residencia_persona',
-            'Barrio_Persona': 'barrio_persona',
             'Ciudad_Persona': 'ciudad_persona'
       },
         //Por medio de este se generan los datos que se almacenara en el archivo excel
@@ -213,9 +216,9 @@
 
             //Mensaje de alerta error
             this.icon = "mdi-cancel"
-            this.mensajeAlert = "¡No hay datos para exportar de Master!"
+            this.mensajeAlert2 = "¡No hay datos para exportar de Master!"
             this.typeAlert = "alert"
-            this.alert = true
+            this.alert2 = true
             this.colorMen = "#FF2D00"
 
             console.log(this.mensaje2)
@@ -223,10 +226,10 @@
             this.json_data2 = response.data;
 
             //Mensaje de alerta succes
-              this.alert = true;
+              this.alert2 = true;
               this.typeAlert = "success";
               this.colorMen = "#008000";
-              this.mensajeAlert = "Se han encontrado registros en Master ¡De click en exportar Gestión!";
+              this.mensajeAlert2 = "Se han encontrado registros en Master ¡De click en exportar Gestión!";
 
             console.log(this.json_data2)
           }
@@ -234,9 +237,16 @@
       },
       //Por medio de este codigo se limpian los datos, cada vez que se genere una descarga
       limpiarDatos(){
-        //Para Alerta
+        //Para Alerta gestion
         this.alert = false;
         this.mensajeAlert = [];
+        this.typeAlert = "";
+        this.colorMen = "";
+        this.icon = "";
+
+        //Para Alerta gestion
+        this.alert2 = false;
+        this.mensajeAlert2 = [];
         this.typeAlert = "";
         this.colorMen = "";
         this.icon = "";

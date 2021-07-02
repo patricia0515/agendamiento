@@ -18,8 +18,8 @@ class CreateSubTipificacionTable extends Migration
 
             $table->integer('idtipificacion');
             $table->string('detalle');
-            $table->integer('prioridad');
-            $table->string('estado');
+            $table->integer('prioridad')->nullable();
+            $table->string('estado')->nullable();
 
             $table->timestamps();
         });
