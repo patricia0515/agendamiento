@@ -1,5 +1,6 @@
 <?php
 
+use App\Master_historico;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,5 +14,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(RolSeeder::class);
         $this->call(MasterSeeder::class);
+        $this->call(MasterHistoricoSeeder::class);
     }
 }

@@ -31,7 +31,7 @@ class CreateMasterHistoricoTable extends Migration
             $table->integer('sub_tipificacion');
             $table->string('tipo_gestion')->nullable();
             $table->string('hora_agendamiento');
-            $table->string('log_historico');
+            $table->string('usuario_gestion');
             $table->string('fase_venta');
             $table->string('direcc_residencia_persona');
             $table->string('barrio_persona');

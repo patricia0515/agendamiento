@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class MasterHistoricoSeeder extends Seeder
 {
@@ -12,7 +12,7 @@ class MasterHistoricoSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('master')->insert([
+        DB::table('master_historico')->insert([
             'nombre_persona' => 'YENNI ANDREA ',
             'apellido_persona' => 'MORA BORDA',
             'tipo_doc_persona' => '1',
