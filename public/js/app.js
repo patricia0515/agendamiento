@@ -2911,6 +2911,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -3022,7 +3024,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
-    return {
+    var _ref;
+
+    return _ref = {
       dates: [],
       dates2: [],
       mensaje: '',
@@ -3033,46 +3037,37 @@ __webpack_require__.r(__webpack_exports__);
       typeAlert: "",
       colorMen: "",
       icon: "",
-      //Encabezados del archivo excel para la descarga de Master_Historico
-      json_fields: {
-        'Nombre': 'full_name',
-        'Tipo_doc': 'tipo_doc',
-        'Num_Doc_Persona': 'documento',
-        'Telefono_1': 'telefono_1',
-        'Telefono_2': 'telefono_2',
-        'Correo_Persona': 'correo_persona',
-        'Fecha_agendamiento': 'fecha_agendamiento',
-        'Observ_Persona': 'observ_persona',
-        'Tipificación': 'tipificacion',
-        'Hora_Agendamiento': 'hora_agendamiento',
-        'Direcc_Residencia_Persona': 'direcc_residencia_persona',
-        'Barrio_Persona': 'barrio_persona',
-        'Ciudad_Persona': 'ciudad_persona'
-      },
-      //Encabezados del archivo excel para la descarga de Master
-      json_fields2: {
-        'Nombre': 'full_name',
-        'Tipo_doc': 'tipo_doc',
-        'Num_Doc_Persona': 'documento',
-        'Telefono_1': 'telefono_1',
-        'Telefono_2': 'telefono_2',
-        'Correo_Persona': 'correo_persona',
-        'Fecha_agendamiento': 'fecha_agendamiento',
-        'Observ_Persona': 'observ_persona',
-        'Tipificación': 'tipificacion',
-        'Hora_Agendamiento': 'hora_agendamiento',
-        'Direcc_Residencia_Persona': 'direcc_residencia_persona',
-        'Barrio_Persona': 'barrio_persona',
-        'Ciudad_Persona': 'ciudad_persona'
-      },
-      //Por medio de este se generan los datos que se almacenara en el archivo excel
-      json_data: [],
-      json_data2: [],
-      json_meta: [[{
-        'key': 'charset',
-        'value': 'utf-8'
-      }]]
-    };
+      //Codigo de la alerta 2
+      alert2: false,
+      mensajeAlert2: []
+    }, _defineProperty(_ref, "typeAlert", ""), _defineProperty(_ref, "colorMen", ""), _defineProperty(_ref, "icon", ""), _defineProperty(_ref, "json_fields", {
+      'Nombre': 'full_name',
+      'Tipo_doc': 'tipo_doc',
+      'Num_Doc_Persona': 'documento',
+      'Telefono_1': 'telefono_1',
+      'Telefono_2': 'telefono_2',
+      'Correo_Persona': 'correo_persona',
+      'Fecha_agendamiento': 'fecha_agendamiento',
+      'Tipificación': 'tipificacion',
+      'Hora_Agendamiento': 'hora_agendamiento',
+      'Direcc_Residencia_Persona': 'direcc_residencia_persona',
+      'Ciudad_Persona': 'ciudad_persona'
+    }), _defineProperty(_ref, "json_fields2", {
+      'Nombre': 'full_name',
+      'Tipo_doc': 'tipo_doc',
+      'Num_Doc_Persona': 'documento',
+      'Telefono_1': 'telefono_1',
+      'Telefono_2': 'telefono_2',
+      'Correo_Persona': 'correo_persona',
+      'Fecha_agendamiento': 'fecha_agendamiento',
+      'Tipificación': 'tipificacion',
+      'Hora_Agendamiento': 'hora_agendamiento',
+      'Direcc_Residencia_Persona': 'direcc_residencia_persona',
+      'Ciudad_Persona': 'ciudad_persona'
+    }), _defineProperty(_ref, "json_data", []), _defineProperty(_ref, "json_data2", []), _defineProperty(_ref, "json_meta", [[{
+      'key': 'charset',
+      'value': 'utf-8'
+    }]]), _ref;
   },
   methods: {
     //Metodo para la descarga de Master historico
@@ -3116,27 +3111,33 @@ __webpack_require__.r(__webpack_exports__);
           _this2.mensaje2 = response.data; //Mensaje de alerta error
 
           _this2.icon = "mdi-cancel";
-          _this2.mensajeAlert = "¡No hay datos para exportar de Master!";
+          _this2.mensajeAlert2 = "¡No hay datos para exportar de Master!";
           _this2.typeAlert = "alert";
-          _this2.alert = true;
+          _this2.alert2 = true;
           _this2.colorMen = "#FF2D00";
           console.log(_this2.mensaje2);
         } else {
           _this2.json_data2 = response.data; //Mensaje de alerta succes
 
-          _this2.alert = true;
+          _this2.alert2 = true;
           _this2.typeAlert = "success";
           _this2.colorMen = "#008000";
-          _this2.mensajeAlert = "Se han encontrado registros en Master ¡De click en exportar Gestión!";
+          _this2.mensajeAlert2 = "Se han encontrado registros en Master ¡De click en exportar Gestión!";
           console.log(_this2.json_data2);
         }
       });
     },
     //Por medio de este codigo se limpian los datos, cada vez que se genere una descarga
     limpiarDatos: function limpiarDatos() {
-      //Para Alerta
+      //Para Alerta gestion
       this.alert = false;
       this.mensajeAlert = [];
+      this.typeAlert = "";
+      this.colorMen = "";
+      this.icon = ""; //Para Alerta gestion
+
+      this.alert2 = false;
+      this.mensajeAlert2 = [];
       this.typeAlert = "";
       this.colorMen = "";
       this.icon = "";
@@ -42021,14 +42022,14 @@ var render = function() {
                       dismissible: ""
                     },
                     model: {
-                      value: _vm.alert,
+                      value: _vm.alert2,
                       callback: function($$v) {
-                        _vm.alert = $$v
+                        _vm.alert2 = $$v
                       },
-                      expression: "alert"
+                      expression: "alert2"
                     }
                   },
-                  [_c("strong", [_vm._v(_vm._s(_vm.mensajeAlert))])]
+                  [_c("strong", [_vm._v(_vm._s(_vm.mensajeAlert2))])]
                 )
               ],
               1

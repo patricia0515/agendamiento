@@ -6,7 +6,7 @@ use App\Master;
 use App\Master_historico;
 use App\Tipo_identificacion;
 use App\Municipios;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -119,7 +119,7 @@ class MasterController extends Controller
             'master_historico.tipificacion as tipificacion',
             'tipificacion.detalle as tip',
             'master_historico.telefono1_persona as telefono',
-             DB::raw('DATE(master_historico.created_at) as fecha_gestionado'),    
+             DB::raw('DATE(master_historico.created_at) as fecha_gestionado')   
         )
         ->orderBy("id", "desc")
         ->get();
@@ -166,19 +166,11 @@ class MasterController extends Controller
             'master_historico.telefono2_persona as telefono_2',
             'master_historico.correo_persona as correo_persona',
             'master_historico.fecha_agendamiento as fecha_agendamiento',
-            'master_historico.usuario_agendamiento as usuario',
-            'master_historico.mensajet_persona as mensajet_persona ',
-            'master_historico.observ_persona as observ_persona ',
             'tipificacion.detalle as tipificacion',
-            'master_historico.sub_tipificacion as sub_tipificacion ',
-            'master_historico.tipo_gestion as tipo_gestion ',
             'master_historico.hora_agendamiento as hora_agendamiento',
-            'master_historico.log_historico as log_historico',
-            'master_historico.fase_venta as fase_venta',
             'master_historico.direcc_residencia_persona as direcc_residencia_persona',
-            'master_historico.barrio_persona as barrio_persona',
             'master_historico.ciudad_persona as ciudad_persona',
-            'master_historico.created_at as creacion',    
+            'master_historico.created_at'    
         )
         ->whereBetween('master_historico.created_at', [$filtro[0].' 00:00:00', $filtro[1].' 23:59:59'])
         ->get();
@@ -203,18 +195,11 @@ class MasterController extends Controller
             'master.telefono2_persona as telefono_2',
             'master.correo_persona as correo_persona',
             'master.fecha_agendamiento as fecha_agendamiento',
-            'master.usuario_agendamiento as usuario',
-            'master.mensajet_persona as mensajet_persona ',
-            'master.observ_persona as observ_persona ',
             'tipificacion.detalle as tipificacion',
-            'master.sub_tipificacion as sub_tipificacion ',
-            'master.tipo_gestion as tipo_gestion ',
             'master.hora_agendamiento as hora_agendamiento',
-            'master.fase_venta as fase_venta',
             'master.direcc_residencia_persona as direcc_residencia_persona',
-            'master.barrio_persona as barrio_persona',
             'master.ciudad_persona as ciudad_persona',
-            'master.created_at as creacion',
+            'master.created_at'
         )
         ->whereBetween('master.created_at', [$filtro[0].' 00:00:00', $filtro[1].' 23:59:59'])
         ->get();
