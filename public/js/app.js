@@ -2543,6 +2543,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2590,8 +2595,10 @@ __webpack_require__.r(__webpack_exports__);
       //Variables para los mensajes de alerta
       alert: false,
       mensajeAlert: [],
-      typeAlert: "",
       colorMen: "",
+      alert2: false,
+      mensajeAlert2: [],
+      colorMen2: "",
       //Para el panel de expansión
       panel: [0, 1],
       panel1: [0, 0],
@@ -2698,25 +2705,25 @@ __webpack_require__.r(__webpack_exports__);
 
       if (!this.buscarValor) {
         this.mensajeAlert = "EL campo Cédula es requerido.";
-        this.typeAlert = "error";
         this.alert = true;
-        this.colorMen = "#FF0033";
+        this.colorMen = 'error';
       } else {
         axios.post("consultaPersona", {
           valor: this.buscarValor
         }).then(function (response) {
           if (response.status == 210) {
+            _this2.alert = false;
             _this2.arrayDataMunicipios = response.data[0];
             _this2.arrayDataTipoId = response.data[1];
             _this2.formulariogestion = 1;
             _this2.mensajeAlert = "No se encontro cliente con el numero de cédula " + _this2.buscarValor + ".";
-            _this2.typeAlert = "info";
             _this2.alert = true;
-            _this2.colorMen = "#FFC30F";
+            _this2.colorMen = 'info';
             _this2.num_doc_persona = _this2.buscarValor;
 
             _this2.listaTipificacion();
           } else {
+            _this2.alert = false;
             _this2.arrayDataPersona = response.data[0];
             _this2.arrayDataMunicipios = response.data[1];
             _this2.arrayDataTipoId = response.data[2];
@@ -2724,8 +2731,7 @@ __webpack_require__.r(__webpack_exports__);
             _this2.infoPersona = 1; //Mensaje de alerta
 
             _this2.alert = true;
-            _this2.typeAlert = "success";
-            _this2.colorMen = "#008000";
+            _this2.colorMen = "success";
             _this2.mensajeAlert = "¡Bien hecho! Registro encontrado.";
             _this2.disabled = false, _this2.idmaster = _this2.arrayDataPersona[0].idmaster;
             _this2.num_doc_persona = _this2.arrayDataPersona[0].num_doc_persona;
@@ -2750,10 +2756,10 @@ __webpack_require__.r(__webpack_exports__);
             _this2.hora_agendamiento1 = _this2.arrayDataPersona[0].hora_agendamiento;
 
             _this2.listaTipificacion();
+
+            _this2.alert = false;
           }
-        })["catch"](function (error) {
-          console.log("error , parece que es la consulta " + error);
-        });
+        })["catch"](function (error) {});
       }
     },
     //Listar tipificaciones
@@ -2774,22 +2780,20 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.id_tip == 1 && this.fecha_agendamiento > this.minimo) {
         this.mensajeAlert = "Ya existe una cita asignada y vigente.";
-        this.typeAlert = "error";
         this.alert = true;
-        this.colorMen = "#FF0033";
-        console.log('Ya existe una cita asignada y vigente.');
+        this.colorMen = 'error';
       } else if (this.id_tip == 2 && this.fecha_agendamiento == "") {
         this.mensajeAlert = "No hay citas asignadas para el cliente. " + this.num_doc_persona;
-        this.typeAlert = "error";
         this.alert = true;
-        this.colorMen = "#FF0033";
-        console.log('No hay citas asigandas.');
+        this.colorMen = 'error';
       } else {
         this.dialog = true;
       }
     },
     agendarCita: function agendarCita() {
       var _this4 = this;
+
+      this.alert = false;
 
       if (this.id_tip == 2) {
         this.fecha_agendamiento1 = this.fecha_agendamiento;
@@ -2799,12 +2803,13 @@ __webpack_require__.r(__webpack_exports__);
         this.mens = 'Seleccione una fecha en el calendario.';
         this.advertencia = true;
       } else {
+        this.alert = false;
         this.formulariogestion = 0;
         /* this.dialog = false; */
         //Mensaje de confirmación
 
-        this.alert = true;
-        this.colorMen = "#008000"; //Petición para guardar los el registro en la base de datos
+        this.alert2 = true;
+        this.colorMen2 = 'success'; //Petición para guardar los el registro en la base de datos
 
         axios.post('actualizar-master', {
           idmaster: this.idmaster,
@@ -2824,13 +2829,13 @@ __webpack_require__.r(__webpack_exports__);
           observ_persona: this.observ_persona
         }).then(function (response) {
           if (_this4.id_tip == 1) {
-            _this4.mensajeAlert = "¡Cita Agendada con exito! Cliente: " + _this4.buscarValor;
+            _this4.mensajeAlert2 = "¡Cita Agendada con exito! Cliente: " + _this4.buscarValor;
           } else if (_this4.id_tip == 2) {
-            _this4.mensajeAlert = "¡Cita Cancelada con exito! Cliente: " + _this4.buscarValor;
+            _this4.mensajeAlert2 = "¡Cita Cancelada con exito! Cliente: " + _this4.buscarValor;
           }
 
           _this4.getCount();
-        }); //Fin Pettición para guardar el registro en la base de datos
+        }); //Fin Petición para guardar el registro en la base de datos
       }
     },
     //Limpiar los datos del cliente cuando se realiza una nueva busqueda
@@ -2846,8 +2851,10 @@ __webpack_require__.r(__webpack_exports__);
 
       this.alert = false;
       this.mensajeAlert = [];
-      this.typeAlert = "";
-      this.colorMen = ""; //Para el panel de expansión
+      this.colorMen = "";
+      this.alert2 = false;
+      this.mensajeAlert2 = [];
+      this.colorMen2 = ""; //Para el panel de expansión
 
       this.panel = [0, 1];
       this.disabled = true;
@@ -3000,28 +3007,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     var _ref;
@@ -3083,18 +3068,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           _this.mensaje = response.data;
           _this.icon = "mdi-cancel";
           _this.mensajeAlert = "¡No hay datos para exportar de Master_Historico!";
-          _this.typeAlert = "alert";
           _this.alert = true;
-          _this.colorMen = "#FF2D00";
+          _this.colorMen = "error";
           console.log(_this.mensaje);
         } else {
           _this.json_data = response.data; //Mensaje de alerta
 
           _this.alert = true;
-          _this.typeAlert = "success";
-          _this.colorMen = "#008000";
+          _this.colorMen = "info";
           _this.mensajeAlert = "Se han encontrado registros en Master_historico ¡De click en exportar Historico! ";
-          console.log(_this.json_data);
         }
       });
     },
@@ -3111,19 +3093,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           _this2.mensaje2 = response.data; //Mensaje de alerta error
 
           _this2.icon = "mdi-cancel";
-          _this2.mensajeAlert2 = "¡No hay datos para exportar de Master!";
-          _this2.typeAlert = "alert";
-          _this2.alert2 = true;
-          _this2.colorMen = "#FF2D00";
-          console.log(_this2.mensaje2);
+          _this2.mensajeAlert = "¡No hay datos para exportar de Master!";
+          _this2.alert = true;
+          _this2.colorMen = "error";
         } else {
           _this2.json_data2 = response.data; //Mensaje de alerta succes
 
-          _this2.alert2 = true;
-          _this2.typeAlert = "success";
-          _this2.colorMen = "#008000";
-          _this2.mensajeAlert2 = "Se han encontrado registros en Master ¡De click en exportar Gestión!";
-          console.log(_this2.json_data2);
+          _this2.alert = true;
+          _this2.colorMen = "info";
+          _this2.mensajeAlert = "Se han encontrado registros en Master ¡De click en exportar Gestión!";
         }
       });
     },
@@ -3132,12 +3110,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       //Para Alerta gestion
       this.alert = false;
       this.mensajeAlert = [];
-      this.typeAlert = "";
-      this.colorMen = "";
-      this.icon = ""; //Para Alerta gestion
-
-      this.alert2 = false;
-      this.mensajeAlert2 = [];
       this.typeAlert = "";
       this.colorMen = "";
       this.icon = "";
@@ -40395,41 +40367,40 @@ var render = function() {
                   1
                 )
               ]
-            : _vm._e(),
-          _vm._v(" "),
-          _c("v-flex", [
-            _c(
-              "div",
-              [
-                _c(
-                  "v-alert",
-                  {
-                    attrs: {
-                      border: "top",
-                      elevation: "3",
-                      "close-text": "Close Alert",
-                      color: _vm.colorMen,
-                      type: _vm.typeAlert,
-                      "colored-border": "",
-                      dismissible: ""
-                    },
-                    model: {
-                      value: _vm.alert,
-                      callback: function($$v) {
-                        _vm.alert = $$v
-                      },
-                      expression: "alert"
-                    }
-                  },
-                  [_c("strong", [_vm._v(_vm._s(_vm.mensajeAlert))])]
-                )
-              ],
-              1
-            )
-          ])
+            : _vm._e()
         ],
         2
       ),
+      _vm._v(" "),
+      _c("v-flex", [
+        _c(
+          "div",
+          [
+            _c(
+              "v-alert",
+              {
+                attrs: {
+                  border: "top",
+                  elevation: "3",
+                  "close-text": "Close Alert",
+                  color: _vm.colorMen2,
+                  "colored-border": "",
+                  dismissible: ""
+                },
+                model: {
+                  value: _vm.alert2,
+                  callback: function($$v) {
+                    _vm.alert2 = $$v
+                  },
+                  expression: "alert2"
+                }
+              },
+              [_c("strong", [_vm._v(_vm._s(_vm.mensajeAlert2))])]
+            )
+          ],
+          1
+        )
+      ]),
       _vm._v(" "),
       _vm.formulariogestion == 1 && _vm.menu == 2
         ? [
@@ -40952,7 +40923,7 @@ var render = function() {
                                                                           {
                                                                             attrs: {
                                                                               label:
-                                                                                "Nombre",
+                                                                                "Nombre(s)",
                                                                               outlined:
                                                                                 "",
                                                                               counter: 20,
@@ -40996,7 +40967,7 @@ var render = function() {
                                                                           {
                                                                             attrs: {
                                                                               label:
-                                                                                "Apellido",
+                                                                                "Apellido(s)",
                                                                               outlined:
                                                                                 "",
                                                                               counter: 20,
@@ -41833,7 +41804,37 @@ var render = function() {
           ]
         : _vm._e(),
       _vm._v(" "),
-      _vm.menu == 1 ? [_c("gestiones-component")] : _vm._e()
+      _vm.menu == 1 ? [_c("gestiones-component")] : _vm._e(),
+      _vm._v(" "),
+      _c(
+        "v-snackbar",
+        {
+          attrs: { color: _vm.colorMen, right: "", top: "" },
+          model: {
+            value: _vm.alert,
+            callback: function($$v) {
+              _vm.alert = $$v
+            },
+            expression: "alert"
+          }
+        },
+        [
+          _vm._v("\n      " + _vm._s(_vm.mensajeAlert) + "\n      "),
+          _c(
+            "v-btn",
+            {
+              attrs: { color: "black", text: "" },
+              on: {
+                click: function($event) {
+                  _vm.alert = false
+                }
+              }
+            },
+            [_vm._v(" Cerrar ")]
+          )
+        ],
+        1
+      )
     ],
     2
   )
@@ -41913,39 +41914,7 @@ var render = function() {
               }
             },
             [_vm._v("\n\n    Exportar Historico\n\n    ")]
-          ),
-          _vm._v(" "),
-          _c("v-flex", [
-            _c(
-              "div",
-              [
-                _c(
-                  "v-alert",
-                  {
-                    attrs: {
-                      border: "top",
-                      elevation: "3",
-                      "close-text": "Close Alert",
-                      color: _vm.colorMen,
-                      type: _vm.typeAlert,
-                      icon: _vm.icon,
-                      "colored-border": "",
-                      dismissible: ""
-                    },
-                    model: {
-                      value: _vm.alert,
-                      callback: function($$v) {
-                        _vm.alert = $$v
-                      },
-                      expression: "alert"
-                    }
-                  },
-                  [_c("strong", [_vm._v(_vm._s(_vm.mensajeAlert))])]
-                )
-              ],
-              1
-            )
-          ])
+          )
         ],
         1
       ),
@@ -42004,37 +41973,40 @@ var render = function() {
             [_vm._v("\n\n    Exportar Gestión\n\n    ")]
           ),
           _vm._v(" "),
-          _c("v-flex", [
-            _c(
-              "div",
-              [
-                _c(
-                  "v-alert",
-                  {
-                    attrs: {
-                      border: "top",
-                      elevation: "3",
-                      "close-text": "Close Alert",
-                      color: _vm.colorMen,
-                      type: _vm.typeAlert,
-                      icon: _vm.icon,
-                      "colored-border": "",
-                      dismissible: ""
-                    },
-                    model: {
-                      value: _vm.alert2,
-                      callback: function($$v) {
-                        _vm.alert2 = $$v
-                      },
-                      expression: "alert2"
+          _c(
+            "v-snackbar",
+            {
+              attrs: {
+                color: _vm.colorMen,
+                icon: _vm.icon,
+                right: "",
+                top: ""
+              },
+              model: {
+                value: _vm.alert,
+                callback: function($$v) {
+                  _vm.alert = $$v
+                },
+                expression: "alert"
+              }
+            },
+            [
+              _vm._v("\n      " + _vm._s(_vm.mensajeAlert) + "\n      "),
+              _c(
+                "v-btn",
+                {
+                  attrs: { color: "black", text: "" },
+                  on: {
+                    click: function($event) {
+                      _vm.alert = false
                     }
-                  },
-                  [_c("strong", [_vm._v(_vm._s(_vm.mensajeAlert2))])]
-                )
-              ],
-              1
-            )
-          ])
+                  }
+                },
+                [_vm._v(" Cerrar ")]
+              )
+            ],
+            1
+          )
         ],
         1
       )

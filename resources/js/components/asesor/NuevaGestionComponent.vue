@@ -123,29 +123,25 @@
           </v-expansion-panels>
         </div>
       </template>
-      <!-- Formulario consulta de persona -->
-      <!-- Inicio de Mensaje de Alerta   -->
+      <!--Fin Formulario consulta de persona -->
+    </v-flex>
+    <!-- Inicio de Mensaje de Alerta   -->
       <v-flex>
         <div>
           <v-alert
-            v-model="alert"
+            v-model="alert2"
             border="top"
             elevation="3"
             close-text="Close Alert"
-            :color="colorMen"
-            :type="typeAlert"
+            :color="colorMen2"
             colored-border
             dismissible
           >
-            <strong>{{ mensajeAlert }}</strong>
+            <strong>{{ mensajeAlert2 }}</strong>
           </v-alert>
         </div>
       </v-flex>
       <!-- Fin de Mensaje de Alerta   -->
-
-      <!--Fin Formulario consulta de persona -->
-    </v-flex>
-    
 
     <!-- Información de la persona -->
     <template v-if="formulariogestion == 1 && menu==2">
@@ -320,7 +316,7 @@
                                     <v-col cols="12" sm="6">
                                       <v-text-field
                                         v-model.trim= "nombre_persona"
-                                        label="Nombre"
+                                        label="Nombre(s)"
                                         outlined
                                         :counter="20"
                                         :rules= "nombre_personaRules"
@@ -330,7 +326,7 @@
                                     <v-col cols="12" sm="6">
                                       <v-text-field
                                         v-model.trim="apellido_persona"
-                                        label="Apellido"
+                                        label="Apellido(s)"
                                         outlined
                                         :counter="20"
                                         :rules= "apellido_personaRules"
@@ -552,6 +548,15 @@
     <template v-if="menu==1">
       <gestiones-component></gestiones-component>
     </template>
+    <!-- Inicio de Mensaje de Alerta   -->
+      <v-snackbar 
+      v-model="alert" 
+      :color="colorMen" 
+      right top>
+        {{mensajeAlert}}
+        <v-btn color="black" text @click="alert = false"> Cerrar </v-btn>
+      </v-snackbar>
+      <!-- Fin de Mensaje de Alerta   -->
   </v-container>
 </template>
 
@@ -615,8 +620,11 @@ export default {
     //Variables para los mensajes de alerta
     alert: false,
     mensajeAlert: [],
-    typeAlert: "",
     colorMen: "",
+
+    alert2: false,
+    mensajeAlert2: [],
+    colorMen2: "",
 
     //Para el panel de expansión
     panel: [0, 1],
@@ -725,9 +733,8 @@ export default {
 
       if (!this.buscarValor) {
         this.mensajeAlert = "EL campo Cédula es requerido.";
-        this.typeAlert = "error";
         this.alert = true;
-        this.colorMen = "#FF0033";
+        this.colorMen = 'error';
       } else {
         axios
           .post("consultaPersona", {
@@ -735,7 +742,7 @@ export default {
           })
           .then((response) => {
             if (response.status == 210) {
-              
+              this.alert = false;
               this.arrayDataMunicipios = response.data[0];
               this.arrayDataTipoId = response.data[1];
               this.formulariogestion = 1;
@@ -743,13 +750,14 @@ export default {
                 "No se encontro cliente con el numero de cédula " +
                 this.buscarValor +
                 ".";
-              this.typeAlert = "info";
+              
               this.alert = true;
-              this.colorMen = "#FFC30F";
+              this.colorMen = 'info';
               this.num_doc_persona=this.buscarValor
 
               this.listaTipificacion();
             } else {
+              this.alert = false;
               this.arrayDataPersona = response.data[0];
               this.arrayDataMunicipios = response.data[1];
               this.arrayDataTipoId = response.data[2];
@@ -758,8 +766,7 @@ export default {
 
               //Mensaje de alerta
               this.alert = true;
-              this.typeAlert = "success";
-              this.colorMen = "#008000";
+              this.colorMen = "success";
               this.mensajeAlert = "¡Bien hecho! Registro encontrado.";
 
               this.disabled = false,
@@ -784,10 +791,10 @@ export default {
               this.hora_agendamiento1 = this.arrayDataPersona[0].hora_agendamiento;
               
               this.listaTipificacion();
+              this.alert=false;
             }
           })
           .catch((error) => {
-            console.log("error , parece que es la consulta " + error);
           });
       }
     },
@@ -810,23 +817,23 @@ export default {
       this.alert=false;
       if (this.id_tip==1 && this.fecha_agendamiento > this.minimo){
         this.mensajeAlert = "Ya existe una cita asignada y vigente.";
-        this.typeAlert = "error";
         this.alert = true;
-        this.colorMen = "#FF0033";
-        console.log('Ya existe una cita asignada y vigente.')
+        this.colorMen = 'error';
+        
 
       }else if (this.id_tip==2 && this.fecha_agendamiento==""){
         this.mensajeAlert = "No hay citas asignadas para el cliente. "+this.num_doc_persona;
-        this.typeAlert = "error";
         this.alert = true;
-        this.colorMen = "#FF0033";
-        console.log('No hay citas asigandas.')
+        this.colorMen = 'error';
       }else{
+        
         this.dialog = true
+        
       }
 
     },
     agendarCita() {
+          this.alert = false;
           if (this.id_tip==2){
             this.fecha_agendamiento1=this.fecha_agendamiento
             
@@ -835,12 +842,13 @@ export default {
             this.mens='Seleccione una fecha en el calendario.'
             this.advertencia=true;
         }else{
+          this.alert=false;
           this.formulariogestion = 0;
           /* this.dialog = false; */
 
           //Mensaje de confirmación
-          this.alert = true;
-          this.colorMen = "#008000";
+          this.alert2 = true;
+          this.colorMen2 = 'success';
           
         //Petición para guardar los el registro en la base de datos
         axios.post('actualizar-master',{
@@ -862,17 +870,17 @@ export default {
               observ_persona: this.observ_persona,
 
         }).then((response)=>{
-        
+                  
               if (this.id_tip == 1) {
-                this.mensajeAlert =
+                this.mensajeAlert2 =
                   "¡Cita Agendada con exito! Cliente: " + this.buscarValor;
               } else if (this.id_tip == 2) {
-                this.mensajeAlert =
+                this.mensajeAlert2 =
                   "¡Cita Cancelada con exito! Cliente: " + this.buscarValor;
               }
               this.getCount();
         })
-        //Fin Pettición para guardar el registro en la base de datos
+        //Fin Petición para guardar el registro en la base de datos
 
         }
       },
@@ -895,8 +903,10 @@ export default {
       //Para Alerta
       this.alert = false;
       this.mensajeAlert = [];
-      this.typeAlert = "";
       this.colorMen = "";
+      this.alert2= false;
+      this.mensajeAlert2= [];
+      this.colorMen2= "";
 
       //Para el panel de expansión
       this.panel = [0, 1];

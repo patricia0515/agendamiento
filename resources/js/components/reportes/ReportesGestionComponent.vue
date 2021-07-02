@@ -31,24 +31,7 @@
       Exportar Historico
   
       </export-excel>
-      <!-- Inicio de Mensaje de Alerta   -->
-    <v-flex>
-      <div>
-        <v-alert
-          v-model="alert"
-          border="top"
-          elevation="3"
-          close-text="Close Alert"
-          :color="colorMen"
-          :type="typeAlert"
-          :icon="icon"
-          colored-border
-          dismissible
-        >
-          <strong>{{ mensajeAlert }}</strong>
-        </v-alert>
-      </div>
-    </v-flex>
+    
     </v-col>
     <hr>
     <v-col
@@ -83,24 +66,19 @@
       Exportar Gestión
   
       </export-excel>
+
       <!-- Inicio de Mensaje de Alerta   -->
-    <v-flex>
-      <div>
-        <v-alert
-          v-model="alert2"
-          border="top"
-          elevation="3"
-          close-text="Close Alert"
-          :color="colorMen"
-          :type="typeAlert"
-          :icon="icon"
-          colored-border
-          dismissible
-        >
-          <strong>{{ mensajeAlert2 }}</strong>
-        </v-alert>
-      </div>
-    </v-flex>
+      <v-snackbar 
+      v-model="alert" 
+      :color="colorMen" 
+      :icon="icon"
+      right top>
+        {{mensajeAlert}}
+        <v-btn color="black" text @click="alert = false"> Cerrar </v-btn>
+      </v-snackbar>
+      <!-- Fin de Mensaje de Alerta   -->
+
+    
     </v-col>
   </v-row>
 </template>
@@ -185,21 +163,16 @@
             
             this.icon = "mdi-cancel"
             this.mensajeAlert = "¡No hay datos para exportar de Master_Historico!"
-            this.typeAlert = "alert"
             this.alert = true
-            this.colorMen = "#FF2D00"
+            this.colorMen = "error"
 
             console.log(this.mensaje)
           }else{
             this.json_data = response.data;
-
             //Mensaje de alerta
               this.alert = true;
-              this.typeAlert = "success";
-              this.colorMen = "#008000";
+              this.colorMen = "info";
               this.mensajeAlert = "Se han encontrado registros en Master_historico ¡De click en exportar Historico! ";
-
-            console.log(this.json_data)
           }
         })
       },
@@ -216,22 +189,16 @@
 
             //Mensaje de alerta error
             this.icon = "mdi-cancel"
-            this.mensajeAlert2 = "¡No hay datos para exportar de Master!"
-            this.typeAlert = "alert"
-            this.alert2 = true
-            this.colorMen = "#FF2D00"
-
-            console.log(this.mensaje2)
+            this.mensajeAlert = "¡No hay datos para exportar de Master!"
+            this.alert = true
+            this.colorMen = "error"
           }else{
             this.json_data2 = response.data;
 
             //Mensaje de alerta succes
-              this.alert2 = true;
-              this.typeAlert = "success";
-              this.colorMen = "#008000";
-              this.mensajeAlert2 = "Se han encontrado registros en Master ¡De click en exportar Gestión!";
-
-            console.log(this.json_data2)
+              this.alert = true;
+              this.colorMen = "info";
+              this.mensajeAlert = "Se han encontrado registros en Master ¡De click en exportar Gestión!";
           }
         })
       },
@@ -244,12 +211,6 @@
         this.colorMen = "";
         this.icon = "";
 
-        //Para Alerta gestion
-        this.alert2 = false;
-        this.mensajeAlert2 = [];
-        this.typeAlert = "";
-        this.colorMen = "";
-        this.icon = "";
       }
     },
     computed: {
